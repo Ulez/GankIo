@@ -1,4 +1,4 @@
-package comulez.github.gankio.base;
+package comulez.github.gankio.ui.base;
 
 /**
  * Created by Ulez on 2016/8/12.

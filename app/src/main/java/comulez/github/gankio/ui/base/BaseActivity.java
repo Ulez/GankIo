@@ -1,15 +1,12 @@
-package comulez.github.gankio.base;
+package comulez.github.gankio.ui.base;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import comulez.github.gankio.R;
+import android.support.v7.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
     }
 }
