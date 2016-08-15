@@ -14,8 +14,12 @@ public class MainActivity extends SwipeRefreshBaseActivity {
    RecyclerView recyclerView;
 
     @Override
+    protected int provideContentViewId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
     }
 }
