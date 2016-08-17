@@ -39,14 +39,13 @@ import comulez.github.gankio.data.Girl;
 /**
  * Created by drakeet on 6/20/15.
  */
-public class MeizhiListAdapter
-        extends RecyclerView.Adapter<MeizhiListAdapter.GirlHolder> {
+public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.GirlHolder> {
 
     public static final String TAG = "MeizhiListAdapter";
 
     private List<Girl> mList;
     private Context mContext;
-    private OnMeizhiTouchListener mOnMeizhiTouchListener;
+    private OnGirlClickListenr onGirlClickListenr;
 
 
     public MeizhiListAdapter(Context context, List<Girl> meizhiList) {
@@ -74,8 +73,7 @@ public class MeizhiListAdapter
         Glide.with(mContext)
              .load(meizhi.url)
              .centerCrop()
-             .into(viewHolder.meizhiView)
-             ;
+             .into(viewHolder.meizhiView);
     }
 
 
@@ -89,8 +87,8 @@ public class MeizhiListAdapter
     }
 
 
-    public void setOnMeizhiTouchListener(OnMeizhiTouchListener onMeizhiTouchListener) {
-        this.mOnMeizhiTouchListener = onMeizhiTouchListener;
+    public void setOnMeizhiTouchListener(OnGirlClickListenr onMeizhiTouchListener) {
+        this.onGirlClickListenr = onMeizhiTouchListener;
     }
 
 
@@ -113,11 +111,11 @@ public class MeizhiListAdapter
 
 
         @Override public void onClick(View v) {
-            mOnMeizhiTouchListener.onTouch(v, meizhiView, card, meizhi);
+            onGirlClickListenr.onTouch(v, meizhiView, card, meizhi);
         }
     }
 
-    public interface OnMeizhiTouchListener {
+    public interface OnGirlClickListenr {
         void onTouch(View v, View meizhiView, View card, Girl meizhi);
     }
 }

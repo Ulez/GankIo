@@ -65,7 +65,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
 
         public GirlHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(itemView);
+            ButterKnife.bind(this, itemView);
             imageView.setOnClickListener(this);
         }
 
