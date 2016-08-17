@@ -22,13 +22,16 @@ import comulez.github.gankio.GankRetrofit;
 import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
 import comulez.github.gankio.data.GirlData;
+import comulez.github.gankio.data.VedioData;
 import comulez.github.gankio.ui.adapter.MeizhiListAdapter;
 import comulez.github.gankio.ui.base.SwipeRefreshInf;
 import comulez.github.gankio.ui.base.ToolbarActivity;
 import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -36,7 +39,7 @@ import rx.schedulers.Schedulers;
  * Email：lcy1532110757@gmail.com
  */
 public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
-    List<Girl> mMeizhiList=new ArrayList<>();
+    List<Girl> mMeizhiList = new ArrayList<>();
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.app_bar_layout)
@@ -63,22 +66,33 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     private void loadData() {
         gankService = GankRetrofit.getmInstance().getmGankService();
         Observable<GirlData> o = gankService.getGirlData(mLastVideoIndex);
-        o.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Observable<VedioData> o2 = gankService.getVedioData(mLastVideoIndex);
+
+        Subscription s = Observable
+                .zip(o, o2, new Func2<GirlData, VedioData, GirlData>() {
+                    @Override
+                    public GirlData call(GirlData girlData, VedioData vedioData) {
+                        for (int i = 0; i < girlData.getResults().size(); i++) {
+                            girlData.getResults().get(i).desc = vedioData.getResults().get(i).getDesc();
+                        }
+                        return girlData;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GirlData>() {
                     @Override
                     public void onStart() {
                         super.onStart();
                         Log.e(TAG, "onStart");
-                        Toast.makeText(mContext,"onStart",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "onStart", Toast.LENGTH_SHORT).show();
                         setRefresh(true);
                     }
 
                     @Override
                     public void onCompleted() {
                         Log.e(TAG, "onCompleted");
-                        Toast.makeText(mContext,"onCompleted",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "onCompleted", Toast.LENGTH_SHORT).show();
                         setRefresh(false);
                     }
 
@@ -96,12 +110,54 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
 
                     @Override
                     public void onNext(GirlData girlData) {
-                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                         rlMeizi.setLayoutManager(layoutManager);
                         mMeizhiListAdapter = new MeizhiListAdapter(mContext, girlData.getResults());
                         rlMeizi.setAdapter(mMeizhiListAdapter);
                     }
                 });
+
+        addSubscription(s);
+
+//        o.subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<GirlData>() {
+//                    @Override
+//                    public void onStart() {
+//                        super.onStart();
+//                        Log.e(TAG, "onStart");
+//                        Toast.makeText(mContext, "onStart", Toast.LENGTH_SHORT).show();
+//                        setRefresh(true);
+//                    }
+//
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.e(TAG, "onCompleted");
+//                        Toast.makeText(mContext, "onCompleted", Toast.LENGTH_SHORT).show();
+//                        setRefresh(false);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "onError");
+//                        Snackbar.make(rlMeizi, R.string.snap_load_fail, Snackbar.LENGTH_LONG)
+//                                .setAction("点击重试", new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        loadData();
+//                                    }
+//                                }).show();
+//                    }
+//
+//                    @Override
+//                    public void onNext(GirlData girlData) {
+//                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+//                        rlMeizi.setLayoutManager(layoutManager);
+//                        mMeizhiListAdapter = new MeizhiListAdapter(mContext, girlData.getResults());
+//                        rlMeizi.setAdapter(mMeizhiListAdapter);
+//                    }
+//                });
     }
 
     @Override
