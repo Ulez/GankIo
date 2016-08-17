@@ -85,7 +85,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "onError");
-                        Toast.makeText(mContext,"onError",Toast.LENGTH_SHORT).show();
                         Snackbar.make(rlMeizi, R.string.snap_load_fail, Snackbar.LENGTH_LONG)
                                 .setAction("点击重试", new View.OnClickListener() {
                                     @Override
@@ -97,22 +96,10 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
 
                     @Override
                     public void onNext(GirlData girlData) {
-                        Log.e(TAG, "onNext,"+girlData.getResults().get(1).url);
-                        Toast.makeText(mContext,girlData.getResults().get(1).url,Toast.LENGTH_SHORT).show();
-
                         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
                         rlMeizi.setLayoutManager(layoutManager);
-
                         mMeizhiListAdapter = new MeizhiListAdapter(mContext, girlData.getResults());
                         rlMeizi.setAdapter(mMeizhiListAdapter);
-
-//                        mMeizhiListAdapter.setOnGirlClickListenr(new GirlsListAdapter.OnGirlClickListenr() {
-//                            @Override
-//                            public void onGirlClick(View v, ImageView imageView, Girl girl) {
-//
-//                            }
-//                        });
-
                     }
                 });
     }

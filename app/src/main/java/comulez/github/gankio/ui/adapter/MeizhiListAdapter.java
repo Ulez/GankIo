@@ -54,9 +54,10 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Gi
     }
 
 
-    @Override public GirlHolder onCreateViewHolder(ViewGroup parent, int i) {
+    @Override
+    public GirlHolder onCreateViewHolder(ViewGroup parent, int i) {
         View v = LayoutInflater.from(parent.getContext())
-                               .inflate(R.layout.item_meizhi, parent, false);
+                .inflate(R.layout.item_meizhi, parent, false);
         return new GirlHolder(v);
     }
 
@@ -65,24 +66,26 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Gi
     public void onBindViewHolder(final GirlHolder viewHolder, final int position) {
         Girl meizhi = mList.get(position);
         int limit = 48;
-        String text = meizhi.desc.length() > limit ? meizhi.desc.substring(0, limit) +"..." : meizhi.desc;
+        String text = meizhi.desc.length() > limit ? meizhi.desc.substring(0, limit) + "..." : meizhi.desc;
         viewHolder.meizhi = meizhi;
         viewHolder.titleView.setText(text);
         viewHolder.card.setTag(meizhi.desc);
 
         Glide.with(mContext)
-             .load(meizhi.url)
-             .centerCrop()
-             .into(viewHolder.meizhiView);
+                .load(meizhi.url)
+                .centerCrop()
+                .into(viewHolder.meizhiView);
     }
 
 
-    @Override public void onViewRecycled(GirlHolder holder) {
+    @Override
+    public void onViewRecycled(GirlHolder holder) {
         super.onViewRecycled(holder);
     }
 
 
-    @Override public int getItemCount() {
+    @Override
+    public int getItemCount() {
         return mList.size();
     }
 
@@ -96,7 +99,8 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Gi
 
         @Bind(R.id.iv_meizhi)
         ImageView meizhiView;
-        @Bind(R.id.tv_title) TextView titleView;
+        @Bind(R.id.tv_title)
+        TextView titleView;
         View card;
         Girl meizhi;
 
@@ -110,8 +114,10 @@ public class MeizhiListAdapter extends RecyclerView.Adapter<MeizhiListAdapter.Gi
         }
 
 
-        @Override public void onClick(View v) {
-            onGirlClickListenr.onTouch(v, meizhiView, card, meizhi);
+        @Override
+        public void onClick(View v) {
+            if (onGirlClickListenr != null)
+                onGirlClickListenr.onTouch(v, meizhiView, card, meizhi);
         }
     }
 

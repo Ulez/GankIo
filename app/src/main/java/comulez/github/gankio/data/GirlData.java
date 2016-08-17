@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Ulez on 2016/8/17.
  * Email：lcy1532110757@gmail.com
  */
-public class GirlData {
+public class GirlData extends BaseData{
     private List<Girl> results;
     public List<Girl> getResults() {
         return results;
