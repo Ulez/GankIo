@@ -14,7 +14,7 @@ public class GankRetrofit {
 
     private static GankRetrofit mInstance;
     private final long DEFAULT_TIMEOUT = 10;
-    private final String BASE_URL = "http://gank.io/api";
+    private final String BASE_URL = "http://gank.io";
     private GankApi mGankService;
     private Retrofit retrofit;
 
@@ -40,5 +40,9 @@ public class GankRetrofit {
             }
         }
         return mInstance;
+    }
+
+    public GankApi getmGankService() {
+        return mGankService;
     }
 }
