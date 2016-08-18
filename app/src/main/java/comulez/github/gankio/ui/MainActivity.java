@@ -23,7 +23,7 @@ import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
 import comulez.github.gankio.data.GirlData;
 import comulez.github.gankio.data.VedioData;
-import comulez.github.gankio.ui.adapter.MeizhiListAdapter;
+import comulez.github.gankio.ui.adapter.GirlsListAdapter;
 import comulez.github.gankio.ui.base.SwipeRefreshInf;
 import comulez.github.gankio.ui.base.ToolbarActivity;
 import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
@@ -53,23 +53,20 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     private GankApi gankService;
     private int mLastVideoIndex = 1;
     private String TAG = "MainActivity";
-    private MeizhiListAdapter mMeizhiListAdapter;
+    private GirlsListAdapter mMeizhiListAdapter;
     private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        loadData();
+        loadData(true);
     }
 
-    private void loadData() {
+    private void loadData(boolean clean) {
         gankService = GankRetrofit.getmInstance().getmGankService();
-        Observable<GirlData> o = gankService.getGirlData(mLastVideoIndex);
-        Observable<VedioData> o2 = gankService.getVedioData(mLastVideoIndex);
-
         Subscription s = Observable
-                .zip(o, o2, new Func2<GirlData, VedioData, GirlData>() {
+                .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
                     @Override
                     public GirlData call(GirlData girlData, VedioData vedioData) {
                         for (int i = 0; i < girlData.getResults().size(); i++) {
@@ -79,7 +76,8 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GirlData>() {
                     @Override
                     public void onStart() {
@@ -112,7 +110,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     public void onNext(GirlData girlData) {
                         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                         rlMeizi.setLayoutManager(layoutManager);
-                        mMeizhiListAdapter = new MeizhiListAdapter(mContext, girlData.getResults());
+                        mMeizhiListAdapter = new GirlsListAdapter(mContext, girlData.getResults());
                         rlMeizi.setAdapter(mMeizhiListAdapter);
                     }
                 });

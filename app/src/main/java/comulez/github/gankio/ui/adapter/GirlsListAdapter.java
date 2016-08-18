@@ -8,12 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
+import comulez.github.gankio.widget.MyImageView;
 
 /**
  * Created by Ulez on 2016/8/17.
@@ -31,7 +34,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
 
     @Override
     public GirlHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_girl, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_meizhi, parent, false);
         return new GirlHolder(v);
     }
 
@@ -39,10 +42,11 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
     public void onBindViewHolder(GirlHolder holder, int position) {
         Girl girl = mGirls.get(position);
         String text = girl.desc.length() > 20 ? girl.desc.substring(0, 10) + "..." : girl.desc;
-//        Glide.with(mContext)
-//                .load(girl.url)
-//                .centerCrop()
-//                .into(holder.imageView);
+        holder.imageView.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
+        Glide.with(mContext)
+                .load(girl.url)
+                .centerCrop()
+                .into(holder.imageView);
         holder.textView.setText(text);
     }
 
@@ -58,7 +62,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
 
     public class GirlHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.iv_meizhi)
-        ImageView imageView;
+        MyImageView imageView;
         @Bind(R.id.tv_title)
         TextView textView;
         Girl girl;

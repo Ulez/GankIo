@@ -8,9 +8,13 @@ import android.widget.ImageView;
  * Created by lcy on 2016/8/17.
  */
 public class MyImageView extends ImageView {
-    private int originalWidth=10;
-    private int originalHeight=10;
+    private int originalWidth = 10;
+    private int originalHeight = 10;
     private float ratio;
+
+    public void setRatio(float ratio) {
+        this.ratio = ratio;
+    }
 
     public MyImageView(Context context) {
         super(context);
@@ -31,7 +35,8 @@ public class MyImageView extends ImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            setMeasuredDimension(width, (int) (1.618*width));
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(width, ratio == 1.0f ? (int) (1.5 * width) : (int) (1.618 * width));
     }
 }
