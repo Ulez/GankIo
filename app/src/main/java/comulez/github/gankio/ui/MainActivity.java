@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -60,10 +61,19 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        rlMeizi.setLayoutManager(layoutManager);
+        mMeizhiListAdapter = new GirlsListAdapter(mContext, mMeizhiList);
+        rlMeizi.setAdapter(mMeizhiListAdapter);
         loadData(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override public void onRefresh() {
+                loadData(true);
+            }
+        });
     }
 
-    private void loadData(boolean clean) {
+    private void loadData(final boolean clean) {
         gankService = GankRetrofit.getmInstance().getmGankService();
         Subscription s = Observable
                 .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
@@ -101,17 +111,19 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                                 .setAction("点击重试", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        loadData();
+                                        loadData(false);
                                     }
                                 }).show();
                     }
 
                     @Override
                     public void onNext(GirlData girlData) {
-                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                        rlMeizi.setLayoutManager(layoutManager);
-                        mMeizhiListAdapter = new GirlsListAdapter(mContext, girlData.getResults());
-                        rlMeizi.setAdapter(mMeizhiListAdapter);
+                        if (clean){
+                            mMeizhiList.clear();
+                        }
+                        mMeizhiList.addAll(girlData.getResults());
+                        mMeizhiListAdapter.notifyDataSetChanged();
+                        setRefresh(false);
                     }
                 });
 
@@ -165,7 +177,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
 
     @Override
     public void requestDataRefresh() {
-
+        loadData(true);
     }
 
     @Override
