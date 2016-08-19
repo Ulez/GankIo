@@ -1,9 +1,12 @@
 package comulez.github.gankio.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import comulez.github.gankio.GankApi;
 import comulez.github.gankio.GankRetrofit;
+import comulez.github.gankio.PictureActivity;
 import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
 import comulez.github.gankio.data.GirlData;
@@ -27,6 +33,7 @@ import comulez.github.gankio.ui.adapter.GirlsListAdapter;
 import comulez.github.gankio.ui.base.SwipeRefreshInf;
 import comulez.github.gankio.ui.base.ToolbarActivity;
 import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
+import comulez.github.gankio.widget.MyImageView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -69,11 +76,31 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mLastVideoIndex=1;
+                mLastVideoIndex = 1;
                 loadData(true);
             }
         });
         rlMeizi.addOnScrollListener(getOnScrollListener(layoutManager));
+        mMeizhiListAdapter.setOnGirlClickListenr(new GirlsListAdapter.OnGirlClickListenr() {
+            @Override
+            public void onGirlClick(View v, MyImageView imageView, TextView gankDec, Girl girl) {
+                Log.e(TAG, "点击----");
+                if (girl == null) return;
+                if (v == imageView) {
+                    Intent intent = PictureActivity.newIntent(mContext, girl.desc, girl.url);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, imageView, PictureActivity.TRANSIT_IMG);
+                    try {
+                        ActivityCompat.startActivity(MainActivity.this, intent, optionsCompat.toBundle());
+                    } catch (Exception e) {
+                        mContext.startActivity(intent);
+                        e.printStackTrace();
+                    }
+                } else if (v == gankDec) {
+                    Toast.makeText(mContext, "点击描述", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "点击描述");
+                }
+            }
+        });
     }
 
     private void loadData(final boolean clean) {
@@ -204,9 +231,9 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int[] position = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
-                Log.e(TAG,"position[0]="+position[0]+",position[1]="+position[1]+",ItemCount="+mMeizhiListAdapter.getItemCount());
+                Log.e(TAG, "position[0]=" + position[0] + ",position[1]=" + position[1] + ",ItemCount=" + mMeizhiListAdapter.getItemCount());
                 boolean isBottom = position[1] >= mMeizhiListAdapter.getItemCount() - 5;
-                if (isBottom&&!swipeRefreshLayout.isRefreshing()){
+                if (isBottom && !swipeRefreshLayout.isRefreshing()) {
                     mLastVideoIndex++;
                     loadData(false);
                 }

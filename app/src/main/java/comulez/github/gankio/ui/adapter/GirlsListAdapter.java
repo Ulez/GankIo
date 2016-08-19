@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -42,12 +41,13 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
     public void onBindViewHolder(GirlHolder holder, int position) {
         Girl girl = mGirls.get(position);
         String text = girl.desc.length() > 22 ? girl.desc.substring(0, 21) + "..." : girl.desc;
-        holder.imageView.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
+        holder.girlImage.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
         Glide.with(mContext)
                 .load(girl.url)
                 .centerCrop()
-                .into(holder.imageView);
-        holder.textView.setText(text);
+                .into(holder.girlImage);
+        holder.gankDec.setText(text);
+        holder.girl=girl;
     }
 
     @Override
@@ -62,21 +62,22 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
 
     public class GirlHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.iv_meizhi)
-        MyImageView imageView;
+        MyImageView girlImage;
         @Bind(R.id.tv_title)
-        TextView textView;
+        TextView gankDec;
         Girl girl;
 
         public GirlHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            imageView.setOnClickListener(this);
+            girlImage.setOnClickListener(this);
+            gankDec.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (onGirlClickListenr != null)
-                onGirlClickListenr.onGirlClick(v, imageView, girl);
+                onGirlClickListenr.onGirlClick(v, girlImage, gankDec,girl);
         }
     }
 
@@ -87,6 +88,6 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
     private OnGirlClickListenr onGirlClickListenr;
 
     public interface OnGirlClickListenr {
-        void onGirlClick(View v, ImageView imageView, Girl girl);
+        void onGirlClick(View v, MyImageView imageView, TextView gankDec, Girl girl);
     }
 }
