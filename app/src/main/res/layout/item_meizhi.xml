@@ -27,22 +27,10 @@
     android:layout_marginTop="2dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/md_amber_700"
+    app:cardBackgroundColor="@color/md_purple_400"
     app:cardCornerRadius="2dp"
     app:cardElevation="2dp">
-    <android.support.v7.widget.CardView
-        android:id="@+id/meizhi_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="1dp"
-        android:layout_marginTop="2dp"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/md_amber_700"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp">
-    </android.support.v7.widget.CardView>
+
 
     <comulez.github.gankio.widget.MyImageView
         android:id="@+id/iv_meizhi"
@@ -52,6 +40,7 @@
         android:scaleType="fitXY" />
 
     <TextView
+        android:textSize="8sp"
         android:textColor="#aaffffff"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"

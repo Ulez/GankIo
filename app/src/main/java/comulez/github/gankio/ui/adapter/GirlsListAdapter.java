@@ -41,7 +41,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
     @Override
     public void onBindViewHolder(GirlHolder holder, int position) {
         Girl girl = mGirls.get(position);
-        String text = girl.desc.length() > 20 ? girl.desc.substring(0, 10) + "..." : girl.desc;
+        String text = girl.desc.length() > 22 ? girl.desc.substring(0, 21) + "..." : girl.desc;
         holder.imageView.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
         Glide.with(mContext)
                 .load(girl.url)

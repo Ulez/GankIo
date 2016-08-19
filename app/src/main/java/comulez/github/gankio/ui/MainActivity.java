@@ -11,7 +11,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     private String TAG = "MainActivity";
     private GirlsListAdapter mMeizhiListAdapter;
     private LinearLayoutManager mLayoutManager;
+    private RecyclerView.OnScrollListener onscrollListner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +67,13 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         rlMeizi.setAdapter(mMeizhiListAdapter);
         loadData(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override public void onRefresh() {
+            @Override
+            public void onRefresh() {
+                mLastVideoIndex=1;
                 loadData(true);
             }
         });
+        rlMeizi.addOnScrollListener(getOnScrollListener(layoutManager));
     }
 
     private void loadData(final boolean clean) {
@@ -93,14 +96,12 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     public void onStart() {
                         super.onStart();
                         Log.e(TAG, "onStart");
-                        Toast.makeText(mContext, "onStart", Toast.LENGTH_SHORT).show();
                         setRefresh(true);
                     }
 
                     @Override
                     public void onCompleted() {
                         Log.e(TAG, "onCompleted");
-                        Toast.makeText(mContext, "onCompleted", Toast.LENGTH_SHORT).show();
                         setRefresh(false);
                     }
 
@@ -118,7 +119,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
 
                     @Override
                     public void onNext(GirlData girlData) {
-                        if (clean){
+                        if (clean) {
                             mMeizhiList.clear();
                         }
                         mMeizhiList.addAll(girlData.getResults());
@@ -195,5 +196,22 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     @Override
     public void setCanChildScrollUpCallback(MultiSwipeRefreshLayout.CanChildScrollUpCallback callback) {
 
+    }
+
+    public RecyclerView.OnScrollListener getOnScrollListener(final StaggeredGridLayoutManager layoutManager) {
+        onscrollListner = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int[] position = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
+                Log.e(TAG,"position[0]="+position[0]+",position[1]="+position[1]+",ItemCount="+mMeizhiListAdapter.getItemCount());
+                boolean isBottom = position[1] >= mMeizhiListAdapter.getItemCount() - 5;
+                if (isBottom&&!swipeRefreshLayout.isRefreshing()){
+                    mLastVideoIndex++;
+                    loadData(false);
+                }
+            }
+        };
+        return onscrollListner;
     }
 }
