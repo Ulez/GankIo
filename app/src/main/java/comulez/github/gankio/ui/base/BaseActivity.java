@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     protected CompositeSubscription mCompositeSubscription;
     protected Context mContext;
+    abstract protected int provideContentViewId();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

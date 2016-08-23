@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PictureActivity"></activity>
+        <activity android:name=".ui.PictureActivity" />
+        <activity android:name=".ui.GankActivity"></activity>
     </application>
 
 </manifest>

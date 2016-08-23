@@ -1,4 +1,4 @@
-package comulez.github.gankio;
+package comulez.github.gankio.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import comulez.github.gankio.R;
 import comulez.github.gankio.ui.base.ToolbarActivity;
 
 public class PictureActivity extends ToolbarActivity {
@@ -33,6 +34,9 @@ public class PictureActivity extends ToolbarActivity {
         ButterKnife.bind(this);
         parseIntent(getIntent());
         ViewCompat.setTransitionName(image, TRANSIT_IMG);
+//        Glide.with(mContext)
+//                .load(url)
+//                .into(image);
         Picasso.with(this).load(url).into(image);
     }
 

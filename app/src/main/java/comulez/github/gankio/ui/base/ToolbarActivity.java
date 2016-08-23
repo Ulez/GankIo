@@ -19,7 +19,7 @@ import comulez.github.gankio.R;
 public abstract class ToolbarActivity extends BaseActivity {
     private boolean mIsHiden=false;
 
-    abstract protected int provideContentViewId();
+
     public void toobarClick(){};
     protected AppBarLayout mAppBar;
     protected Toolbar mToolbar;

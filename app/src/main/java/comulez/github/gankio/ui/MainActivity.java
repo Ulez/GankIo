@@ -17,16 +17,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import comulez.github.gankio.GankApi;
 import comulez.github.gankio.GankRetrofit;
-import comulez.github.gankio.PictureActivity;
 import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
 import comulez.github.gankio.data.GirlData;
@@ -65,6 +67,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     private GirlsListAdapter mMeizhiListAdapter;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.OnScrollListener onscrollListner;
+    private boolean beTouched = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,24 +88,46 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         rlMeizi.addOnScrollListener(getOnScrollListener(layoutManager));
         mMeizhiListAdapter.setOnGirlClickListenr(new GirlsListAdapter.OnGirlClickListenr() {
             @Override
-            public void onGirlClick(View v, MyImageView imageView, TextView gankDec, Girl girl) {
+            public void onGirlClick(View v, final MyImageView imageView, TextView gankDec, final Girl girl) {
                 Log.e(TAG, "点击----");
                 if (girl == null) return;
-                if (v == imageView) {
-                    Intent intent = PictureActivity.newIntent(mContext, girl.desc, girl.url);
-                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, imageView, PictureActivity.TRANSIT_IMG);
-                    try {
-                        ActivityCompat.startActivity(MainActivity.this, intent, optionsCompat.toBundle());
-                    } catch (Exception e) {
-                        mContext.startActivity(intent);
-                        e.printStackTrace();
-                    }
+                if (v == imageView && !beTouched) {
+                    beTouched = true;
+                    Picasso.with(mContext).load(girl.url).fetch(new Callback() {//加载完了再开启activity，防止activity动画错误；
+                        @Override
+                        public void onSuccess() {
+                            beTouched = false;
+                            startPicturAcitivity(imageView, girl);
+                        }
+
+                        @Override
+                        public void onError() {
+                            beTouched = false;
+                        }
+                    });
+
                 } else if (v == gankDec) {
-                    Toast.makeText(mContext, "点击描述", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "点击描述");
+                    startGankActivity(girl.publishedAt);
                 }
             }
         });
+    }
+
+    private void startPicturAcitivity(MyImageView imageView, Girl girl) {
+        Intent intent = PictureActivity.newIntent(mContext, girl.desc, girl.url);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, imageView, PictureActivity.TRANSIT_IMG);
+        try {
+            ActivityCompat.startActivity(MainActivity.this, intent, optionsCompat.toBundle());
+        } catch (Exception e) {
+            mContext.startActivity(intent);
+            e.printStackTrace();
+        }
+    }
+
+    private void startGankActivity(Date publishedAt) {
+        Intent intent = new Intent(mContext, GankActivity.class);
+        intent.putExtra(GankActivity.EXTRA_GANK_DATE, publishedAt);
+        startActivity(intent);
     }
 
     private void loadData(final boolean clean) {
@@ -251,7 +276,9 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         initNotifiableItemState(item);
         return true;
     }
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_trending:
@@ -262,6 +289,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void initNotifiableItemState(MenuItem item) {
 
     }
