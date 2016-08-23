@@ -3,6 +3,7 @@ package comulez.github.gankio.ui.base;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,12 @@ public abstract class ToolbarActivity extends BaseActivity {
             }
         });
 
+        setSupportActionBar(mToolbar);
+        if (canBack()){
+           ActionBar actionbar= getSupportActionBar();
+            if (actionbar!=null)
+                actionbar.setDisplayHomeAsUpEnabled(true);
+        }
         if (Build.VERSION.SDK_INT >= 21) {
             mAppBar.setElevation(10.6f);
         }
@@ -45,7 +52,7 @@ public abstract class ToolbarActivity extends BaseActivity {
     protected void setAppBarAlpha(float alpha) {
         mAppBar.setAlpha(alpha);
     }
-    private boolean canBack() {
+    public boolean canBack() {
         return false;
     }
     protected void hideOrShowToolbar(){
