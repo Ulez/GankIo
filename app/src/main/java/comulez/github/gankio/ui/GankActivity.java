@@ -1,16 +1,14 @@
 package comulez.github.gankio.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.FrameLayout;
+import android.util.Log;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,9 +27,9 @@ import comulez.github.gankio.ui.base.ToolbarActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class GankActivity extends ToolbarActivity {
@@ -41,24 +39,15 @@ public class GankActivity extends ToolbarActivity {
     Toolbar toolbar;
     @Bind(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
-    @Bind(R.id.preview)
-    ImageView preview;
+    @Bind(R.id.iv_pre)
+    ImageView iv_preview;
     @Bind(R.id.im_play)
     ImageView imPlay;
-    @Bind(R.id.video)
-    FrameLayout video;
     @Bind(R.id.rv_ganks)
     RecyclerView rvGanks;
     private String TAG = "GankActivity";
     private String url = "http://www.miaopai.com/show/bJWgofJk3Fq0mXsdWQcPpg__.htm";
     private OkHttpClient client;
-    private String previewImage;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Picasso.with(mContext).load(previewImage).into(preview);
-        }
-    };
     private List<Gank> gankList;
     private GankAdapter adapter;
 
@@ -73,65 +62,38 @@ public class GankActivity extends ToolbarActivity {
         ButterKnife.bind(this);
         initRecy();
         GankApi gankService = GankRetrofit.getmInstance().getmGankService();
-        Observable<GankData> o = gankService.getGankData(2016, 8, 25);
-        o.subscribeOn(Schedulers.io())
+        gankService
+                .getGankData(2016, 8, 24)
+                .map(new Func1<GankData, GankData>() {
+                    @Override
+                    public GankData call(GankData gankData) {
+                        String oldUrl = gankData.results.休息视频List.get(0).url;
+                        gankData.results.休息视频List.get(0).url = getPreImageUrl(oldUrl);
+                        Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
+                        return gankData;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GankData>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.e(TAG, "onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "error");
                     }
 
                     @Override
                     public void onNext(GankData gankData) {
                         addDatas(gankData.results);
                         adapter.notifyDataSetChanged();
+                        Glide.with(mContext).load(gankData.results.休息视频List.get(0).url).into(iv_preview);
                     }
                 });
-//                .map(new Func1<GankData, String>() {
-//                    @Override
-//                    public String call(GankData gankData) {
-////                        addDatas(gankData.results);
-//                        return gankData.results.休息视频List.get(0).url;
-//                    }
-//                })
-//                .map(new Func1<String, String>() {
-//                    @Override
-//                    public String call(String s) {
-//                        return getPreImageUrl();
-//                    }
-//                })
-//                .subscribe(new Action1<String>() {
-//                    @Override
-//                    public void call(String url) {
-//                        Picasso.with(mContext).load(url).into(preview);
-//                    }
-//                });
-//                .subscribe(new Subscriber<GankData>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(GankData gankData) {
-//                        String url = gankData.results.休息视频List.get(0).url;
-
-//                        Log.e(TAG, "url=" + url);
-//                    }
-//                });
-
     }
 
     private void initRecy() {
@@ -166,11 +128,11 @@ public class GankActivity extends ToolbarActivity {
         return response.body().string();
     }
 
-    private String getPreImageUrl() {
+    private String getPreImageUrl(String oldUrl) {
         client = new OkHttpClient();
         String result = null;
         try {
-            result = getHtml("http://www.miaopai.com/show/bJWgofJk3Fq0mXsdWQcPpg__.htm");
+            result = getHtml(oldUrl);
             int s0 = result.indexOf("\"og:image\" content=");
             int s1 = result.indexOf("http", s0);
             int s2 = result.indexOf("\"/>", s1);
