@@ -20,7 +20,7 @@
 
     <style name="ViaTextAppearance">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/md_grey_400</item>
+        <item name="android:textColor">@color/md_blue_700</item>
     </style>
 
     <style name="LisPaddingStyle">

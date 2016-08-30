@@ -2,6 +2,9 @@ package comulez.github.gankio.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +40,10 @@ public class GankAdapter extends AniAdapter<GankAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         Gank gank = gankList.get(position);
-        if (position==0){
-            holder.category.setVisibility(View.VISIBLE);
-            currentType=gank.type;
-        }
+//        if (position==0){
+//            holder.category.setVisibility(View.VISIBLE);
+//            currentType=gank.type;
+//        }
         if (gank.type.equals(currentType)){
             holder.category.setVisibility(View.GONE);
         }else {
@@ -48,9 +51,17 @@ public class GankAdapter extends AniAdapter<GankAdapter.Holder> {
             holder.category.setVisibility(View.VISIBLE);
             holder.category.setText(gank.type);
         }
-        holder.tvDesc.setText(gank.desc);
-    }
+        SpannableStringBuilder builder = new SpannableStringBuilder(gank.desc).append(format(context, " (via." +gank.who + ")", R.style.ViaTextAppearance));
+        CharSequence gankText = builder.subSequence(0, builder.length());
 
+        holder.tvDesc.setText(gankText);
+        showItemAnim(holder.tvDesc,position);
+    }
+    public static SpannableString format(Context context, String text, int style) {
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new TextAppearanceSpan(context, style), 0, text.length(),0);
+        return spannableString;
+    }
 
     @Override
     public int getItemCount() {

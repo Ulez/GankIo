@@ -39,7 +39,7 @@ public class AniAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.
                     animation.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {
-                            view.setAlpha(1.0f);//这里为啥要有个监听？
+                            view.setAlpha(1.0f);//开始的时候是透明的，设置了不透明就显示出来；
                         }
                         @Override
                         public void onAnimationEnd(Animation animation) {}
