@@ -125,9 +125,8 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     }
 
     private void startGankActivity(Date publishedAt) {
-        Intent intent = new Intent(mContext, GankActivity.class);
-        intent.putExtra(GankActivity.EXTRA_GANK_DATE, publishedAt);
-        startActivity(intent);
+        Log.e(TAG,"put publishedAt="+publishedAt);
+        startActivity(GankActivity.newIntent(mContext,publishedAt));
     }
 
     private void loadData(final boolean clean) {

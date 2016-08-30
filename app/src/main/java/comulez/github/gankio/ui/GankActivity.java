@@ -1,5 +1,7 @@
 package comulez.github.gankio.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +13,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -50,6 +55,9 @@ public class GankActivity extends ToolbarActivity {
     private OkHttpClient client;
     private List<Gank> gankList;
     private GankAdapter adapter;
+    private int year=2016;
+    private int month=7;
+    private int day=1;
 
     @Override
     protected int provideContentViewId() {
@@ -60,10 +68,12 @@ public class GankActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        parseIntent();
         initRecy();
         GankApi gankService = GankRetrofit.getmInstance().getmGankService();
+        Log.e(TAG,"year="+year+"month="+month+"day="+day);
         gankService
-                .getGankData(2016, 8, 24)
+                .getGankData(year, month, day)
                 .map(new Func1<GankData, GankData>() {
                     @Override
                     public GankData call(GankData gankData) {
@@ -94,6 +104,16 @@ public class GankActivity extends ToolbarActivity {
                         Glide.with(mContext).load(gankData.results.休息视频List.get(0).url).into(iv_preview);
                     }
                 });
+    }
+
+    private void parseIntent() {
+        Intent intent=getIntent();
+        Serializable mDate=intent.getSerializableExtra(EXTRA_GANK_DATE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime((Date) mDate);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     private void initRecy() {
@@ -146,5 +166,11 @@ public class GankActivity extends ToolbarActivity {
     @OnClick(R.id.im_play)
     public void onClick() {
 
+    }
+
+    public static Intent newIntent(Context mContext, Date publishedAt) {
+        Intent intent=new Intent(mContext,GankActivity.class);
+        intent.putExtra(GankActivity.EXTRA_GANK_DATE, publishedAt);
+        return intent;
     }
 }

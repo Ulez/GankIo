@@ -42,8 +42,6 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
         Girl girl = mGirls.get(position);
         String text = girl.desc.length() > 22 ? girl.desc.substring(0, 21) + "..." : girl.desc;
         holder.girlImage.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
-
-//        Picasso.with(mContext).load(girl.url).into(holder.girlImage);
         Glide.with(mContext)
                 .load(girl.url)
                 .centerCrop()
