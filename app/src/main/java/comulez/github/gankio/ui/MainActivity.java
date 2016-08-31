@@ -77,6 +77,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         rlMeizi.setLayoutManager(layoutManager);
         mMeizhiListAdapter = new GirlsListAdapter(mContext, mMeizhiList);
         rlMeizi.setAdapter(mMeizhiListAdapter);
+        gankService = GankRetrofit.getmInstance().getmGankService();
         loadData(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -125,12 +126,12 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     }
 
     private void startGankActivity(Date publishedAt) {
-        Log.e(TAG,"put publishedAt="+publishedAt);
-        startActivity(GankActivity.newIntent(mContext,publishedAt));
+        Log.e(TAG, "put publishedAt=" + publishedAt);
+        startActivity(GankActivity.newIntent(mContext, publishedAt));
     }
 
     private void loadData(final boolean clean) {
-        gankService = GankRetrofit.getmInstance().getmGankService();
+        setRefresh(true);
         Subscription s = Observable
                 .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
                     @Override
@@ -175,8 +176,17 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                         if (clean) {
                             mMeizhiList.clear();
                         }
+                        int start = 0;
+                        if (mMeizhiList != null) {
+                            start = mMeizhiList.size();
+                        }
                         mMeizhiList.addAll(girlData.getResults());
-                        mMeizhiListAdapter.notifyDataSetChanged();
+//                        mMeizhiListAdapter.notifyDataSetChanged();
+                        if (clean){
+                            mMeizhiListAdapter.notifyDataSetChanged();
+                        }else {
+                            mMeizhiListAdapter.notifyItemRangeChanged(start, 10);
+                        }
                         setRefresh(false);
                     }
                 });
