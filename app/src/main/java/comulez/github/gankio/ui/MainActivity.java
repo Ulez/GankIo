@@ -257,7 +257,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int[] position = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
-                Log.e(TAG, "position[0]=" + position[0] + ",position[1]=" + position[1] + ",ItemCount=" + mMeizhiListAdapter.getItemCount());
                 boolean isBottom = position[1] >= mMeizhiListAdapter.getItemCount() - 5;
                 if (isBottom && !swipeRefreshLayout.isRefreshing()) {
                     mLastVideoIndex++;

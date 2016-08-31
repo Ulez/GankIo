@@ -77,10 +77,15 @@ public class GankActivity extends ToolbarActivity {
                 .map(new Func1<GankData, GankData>() {
                     @Override
                     public GankData call(GankData gankData) {
-                        String oldUrl = gankData.results.休息视频List.get(0).url;
-                        gankData.results.休息视频List.get(0).url = getPreImageUrl(oldUrl);
-                        Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
-                        return gankData;
+                        try{
+                            String oldUrl = gankData.results.休息视频List.get(0).url;
+                            gankData.results.休息视频List.get(0).url = getPreImageUrl(oldUrl);
+                            Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
+                            return gankData;
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            return gankData;
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -112,7 +117,7 @@ public class GankActivity extends ToolbarActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) mDate);
         year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
+        month = calendar.get(Calendar.MONTH)+1;
         day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
@@ -151,11 +156,17 @@ public class GankActivity extends ToolbarActivity {
     private String getPreImageUrl(String oldUrl) {
         client = new OkHttpClient();
         String result = null;
+        int s0=-1;
+        int s1=-1;
+        int s2=-1;
         try {
             result = getHtml(oldUrl);
-            int s0 = result.indexOf("\"og:image\" content=");
-            int s1 = result.indexOf("http", s0);
-            int s2 = result.indexOf("\"/>", s1);
+            Log.e(TAG,result);
+            s0 = result.indexOf("\"og:image\" content=");
+            if (s0==-1)//  <img src="http://i0.hdslb.com/bfs/archive/b308552417ab6dcfe98f873bd4882f0a511ad838.jpg" style="display:none;" class="cover_image
+                s0=result.indexOf("<img src=");
+            s1 = result.indexOf("http", s0);
+            s2 = result.indexOf(".jpg", s1)+4;
             return result.substring(s1, s2);
         } catch (IOException e) {
             e.printStackTrace();
