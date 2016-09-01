@@ -51,13 +51,12 @@ public class GankActivity extends ToolbarActivity {
     @Bind(R.id.rv_ganks)
     RecyclerView rvGanks;
     private String TAG = "GankActivity";
-    private String url = "http://www.miaopai.com/show/bJWgofJk3Fq0mXsdWQcPpg__.htm";
     private OkHttpClient client;
     private List<Gank> gankList;
     private GankAdapter adapter;
-    private int year=2016;
-    private int month=7;
-    private int day=1;
+    private int year = 2016;
+    private int month = 7;
+    private int day = 1;
 
     @Override
     protected int provideContentViewId() {
@@ -71,18 +70,18 @@ public class GankActivity extends ToolbarActivity {
         parseIntent();
         initRecy();
         GankApi gankService = GankRetrofit.getmInstance().getmGankService();
-        Log.e(TAG,"year="+year+"month="+month+"day="+day);
+        Log.e(TAG, "year=" + year + "month=" + month + "day=" + day);
         gankService
                 .getGankData(year, month, day)
                 .map(new Func1<GankData, GankData>() {
                     @Override
                     public GankData call(GankData gankData) {
-                        try{
+                        try {
                             String oldUrl = gankData.results.休息视频List.get(0).url;
-                            gankData.results.休息视频List.get(0).url = getPreImageUrl(oldUrl);
+                            gankData.results.休息视频List.get(0).url += ("*" + getPreImageUrl(oldUrl));
                             Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
                             return gankData;
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                             return gankData;
                         }
@@ -106,18 +105,26 @@ public class GankActivity extends ToolbarActivity {
                     public void onNext(GankData gankData) {
                         addDatas(gankData.results);
                         adapter.notifyDataSetChanged();
-                        Glide.with(mContext).load(gankData.results.休息视频List.get(0).url).into(iv_preview);
+                        Glide.with(mContext).load(handle(gankData.results.休息视频List.get(0).url)).into(iv_preview);
                     }
                 });
     }
 
+    private String handle(String url) {
+        int yy = url.indexOf("*");
+        if (yy == -1)
+            return url;
+        else
+            return url.substring(yy+1, url.length());
+    }
+
     private void parseIntent() {
-        Intent intent=getIntent();
-        Serializable mDate=intent.getSerializableExtra(EXTRA_GANK_DATE);
+        Intent intent = getIntent();
+        Serializable mDate = intent.getSerializableExtra(EXTRA_GANK_DATE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime((Date) mDate);
         year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH)+1;
+        month = calendar.get(Calendar.MONTH) + 1;
         day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
@@ -156,17 +163,16 @@ public class GankActivity extends ToolbarActivity {
     private String getPreImageUrl(String oldUrl) {
         client = new OkHttpClient();
         String result = null;
-        int s0=-1;
-        int s1=-1;
-        int s2=-1;
+        int s0 = -1;
+        int s1 = -1;
+        int s2 = -1;
         try {
             result = getHtml(oldUrl);
-            Log.e(TAG,result);
             s0 = result.indexOf("\"og:image\" content=");
-            if (s0==-1)//  <img src="http://i0.hdslb.com/bfs/archive/b308552417ab6dcfe98f873bd4882f0a511ad838.jpg" style="display:none;" class="cover_image
-                s0=result.indexOf("<img src=");
+            if (s0 == -1)//  <img src="http://i0.hdslb.com/bfs/archive/b308552417ab6dcfe98f873bd4882f0a511ad838.jpg" style="display:none;" class="cover_image
+                s0 = result.indexOf("<img src=");
             s1 = result.indexOf("http", s0);
-            s2 = result.indexOf(".jpg", s1)+4;
+            s2 = result.indexOf(".jpg", s1) + 4;
             return result.substring(s1, s2);
         } catch (IOException e) {
             e.printStackTrace();
@@ -180,7 +186,7 @@ public class GankActivity extends ToolbarActivity {
     }
 
     public static Intent newIntent(Context mContext, Date publishedAt) {
-        Intent intent=new Intent(mContext,GankActivity.class);
+        Intent intent = new Intent(mContext, GankActivity.class);
         intent.putExtra(GankActivity.EXTRA_GANK_DATE, publishedAt);
         return intent;
     }

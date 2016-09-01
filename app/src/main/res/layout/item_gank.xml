@@ -14,12 +14,13 @@
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <TextView
+            android:layout_marginTop="2dp"
             android:textColor="@color/md_yellow_500"
             android:text=" * "
             android:textSize="18sp"
             android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
         <TextView
             android:padding="2dp"
             android:id="@+id/tv_desc"
