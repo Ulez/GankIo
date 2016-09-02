@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 
 public class GankActivity extends ToolbarActivity {
 
-    public static String EXTRA_GANK_DATE = "date";
+    private static String EXTRA_GANK_DATE = "date";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.app_bar_layout)
@@ -187,7 +187,7 @@ public class GankActivity extends ToolbarActivity {
 
     public static Intent newIntent(Context mContext, Date publishedAt) {
         Intent intent = new Intent(mContext, GankActivity.class);
-        intent.putExtra(GankActivity.EXTRA_GANK_DATE, publishedAt);
+        intent.putExtra(EXTRA_GANK_DATE, publishedAt);
         return intent;
     }
 }

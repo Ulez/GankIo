@@ -29,7 +29,8 @@
         </activity>
         <activity android:name=".ui.PictureActivity" />
         <activity android:name=".ui.GankActivity" />
-        <activity android:name=".ui.WebViewActivity"></activity>
+        <activity android:name=".ui.WebViewActivity" />
+        <activity android:name=".ui.GankActivity2"></activity>
     </application>
 
 </manifest>
