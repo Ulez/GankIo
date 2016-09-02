@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -89,9 +88,8 @@ public class GankAdapter extends AniAdapter<GankAdapter.Holder> {
         public void onClick(View v) {
             int position=getLayoutPosition();
             gankList.get(position);
-            Toast.makeText(context,"position="+getLayoutPosition(),Toast.LENGTH_SHORT).show();
             context.startActivity(WebViewActivity.newIntent(context,gankList.get(position).url, gankList.get(position).desc));
-            Log.e(TAG,"url="+gankList.get(position).url+",desc="+gankList.get(position).desc);
+            Log.e(TAG,"url="+gankList.get(position).url+",描述="+gankList.get(position).desc);
         }
     }
 }

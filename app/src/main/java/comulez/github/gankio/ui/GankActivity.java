@@ -79,7 +79,7 @@ public class GankActivity extends ToolbarActivity {
                     public GankData call(GankData gankData) {
                         try {
                             String oldUrl = gankData.results.休息视频List.get(0).url;
-                            gankData.results.休息视频List.get(0).url += ("*" + getPreImageUrl(oldUrl));
+                            gankData.results.休息视频List.get(0).url += getPreImageUrl(oldUrl);
                             Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
                             return gankData;
                         } catch (Exception e) {
@@ -109,17 +109,22 @@ public class GankActivity extends ToolbarActivity {
                     public void onNext(GankData gankData) {
                         addDatas(gankData.results);
                         adapter.notifyDataSetChanged();
-                        Glide.with(mContext).load(handle(gankData.results.休息视频List.get(0).url)).into(iv_preview);
+                        Glide.with(mContext).load(getPreImgUrl(gankData.results.休息视频List.get(0).url)).into(iv_preview);
                     }
                 });
     }
 
-    private String handle(String url) {
-        int yy = url.indexOf("*");
+    /**
+     * 包含网页url和预览图url；
+     * @param allUrl
+     * @return
+     */
+    private String getPreImgUrl(String allUrl) {
+        int yy = allUrl.indexOf("*");
         if (yy == -1)
-            return url;
+            return allUrl;
         else
-            return url.substring(yy+1, url.length());
+            return allUrl.substring(yy+1, allUrl.length());
     }
 
     private void parseIntent() {
@@ -177,7 +182,7 @@ public class GankActivity extends ToolbarActivity {
                 s0 = result.indexOf("<img src=");
             s1 = result.indexOf("http", s0);
             s2 = result.indexOf(".jpg", s1) + 4;
-            return result.substring(s1, s2);
+            return "*" +result.substring(s1, s2);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
