@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.webkit.WebView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -99,6 +100,9 @@ public class GankActivity extends ToolbarActivity {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "error");
+                        WebView webView=new WebView(mContext);
+                        webView.loadUrl("http://gank.io/"+year+"/"+month+"/"+day);//加载的网页版gankio；
+                        GankActivity.this.setContentView(webView);
                     }
 
                     @Override
