@@ -83,6 +83,7 @@ public class GankActivity extends ToolbarActivity {
                             Log.e(TAG, "Func1===" + gankData.results.休息视频List.get(0).url);
                             return gankData;
                         } catch (Exception e) {
+//                            loadWeb();
                             e.printStackTrace();
                             return gankData;
                         }
@@ -99,10 +100,7 @@ public class GankActivity extends ToolbarActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "error");
-                        WebView webView=new WebView(mContext);
-                        webView.loadUrl("http://gank.io/"+year+"/"+month+"/"+day);//加载的网页版gankio；
-                        GankActivity.this.setContentView(webView);
+                        loadWeb();
                     }
 
                     @Override
@@ -112,6 +110,13 @@ public class GankActivity extends ToolbarActivity {
                         Glide.with(mContext).load(getPreImgUrl(gankData.results.休息视频List.get(0).url)).into(iv_preview);
                     }
                 });
+    }
+
+    private void loadWeb() {
+        WebView webView=new WebView(mContext);
+        Log.e(TAG, "error,,"+"http://gank.io/"+year+"/"+month+"/"+day);
+        webView.loadUrl("http://gank.io/"+year+"/"+month+"/"+day);//加载的网页版gankio；
+        setContentView(webView);
     }
 
     /**

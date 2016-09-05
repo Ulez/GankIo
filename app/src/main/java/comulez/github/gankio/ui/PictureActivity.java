@@ -1,12 +1,17 @@
 package comulez.github.gankio.ui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -16,6 +21,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -25,8 +31,8 @@ import comulez.github.gankio.R;
 import comulez.github.gankio.ui.base.ToolbarActivity;
 import comulez.github.gankio.util.Tutil;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -41,6 +47,8 @@ public class PictureActivity extends ToolbarActivity {
     private String url;
     public static String TRANSIT_IMG = "image";
     private PhotoViewAttacher mPhotoViewAttacher;
+    private String TAG = "PictureActivity";
+    private int CODE_FOR_WRITE_PERMISSION = 2;
 
     @Override
     protected int provideContentViewId() {
@@ -69,7 +77,7 @@ public class PictureActivity extends ToolbarActivity {
             @Override
             public boolean onLongClick(View v) {
                 new AlertDialog.Builder(PictureActivity.this)
-                        .setMessage("保存到本地？")
+                        .setMessage("保存到手机？")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -84,52 +92,107 @@ public class PictureActivity extends ToolbarActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CODE_FOR_WRITE_PERMISSION) {
+            if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Tutil.t("允许写入权限");
+            } else {
+                Tutil.t("拒绝写入权限");
+            }
+        }
+    }
+
+    /**
+     * 保存图片到本地；
+     *
+     * @param url
+     */
     private void saveImage(final String url) {
-        Observable.just(url) // 输入类型 String
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, Uri>() {
+        int hasWriteContactsPermission = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            hasWriteContactsPermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                Activity activty = this;
+                ActivityCompat.requestPermissions(activty, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODE_FOR_WRITE_PERMISSION);
+                return;
+            }
+        }
+        Observable
+                .create(new Observable.OnSubscribe<Bitmap>() {
                     @Override
-                    public Uri call(String filePath) {
-                        Uri uri = null;
+                    public void call(Subscriber<? super Bitmap> subscriber) {
                         Bitmap bitmap = null;
                         try {
                             bitmap = Picasso.with(mContext).load(url).get();
-                            File appDir = new File(Environment.getExternalStorageDirectory(), "Ulez");
-                            if (!appDir.exists()) {
-                                appDir.mkdir();
+                            if (bitmap != null) {
+                                subscriber.onNext(bitmap);
+                                subscriber.onCompleted();
+                            } else {
+                                subscriber.onError(new Exception("无法下载图片"));
                             }
-                            String fileName = desc.replace('/', '-') + ".jpg";
-                            File file = new File(appDir, fileName);
+                        } catch (IOException e) {
+                            subscriber.onError(e);
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .map(new Func1<Bitmap, Uri>() {
+                    @Override
+                    public Uri call(Bitmap bitmap) {
+                        Uri uri = null;
+                        File appDir = new File(Environment.getExternalStorageDirectory(), "GankIo");
+                        Log.e(TAG, "dir1=" + appDir.getAbsolutePath());
+                        if (!appDir.exists()) {
+                            appDir.mkdir();
+                        }
+//                        String fileName = desc.replace('/', '-') + ".jpg";
+                        String fileName = desc.replace('/', '-') + ".jpg";
+                        File file = new File(appDir, fileName);
+                        if (file.exists()) {
+                            Tutil.t(getString(R.string.action_about));
+                            return Uri.fromFile(file);
+                        }
+                        try {
+                            FileOutputStream outputStream = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                             try {
-                                FileOutputStream outputStream = new FileOutputStream(file);
-                                assert bitmap != null;
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                                 outputStream.flush();
                                 outputStream.close();
+                                Log.e(TAG, getString(R.string.has_saved));
                                 uri = Uri.fromFile(file);
                                 // 通知图库更新
                                 Intent scannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
                                 mContext.sendBroadcast(scannerIntent);
                             } catch (IOException e) {
-                                Log.e("LCY", "图片写入错误");
                                 e.printStackTrace();
                             }
-                        } catch (IOException e) {
-                            Log.e("LCY", "picasso获取错误");
+                        } catch (FileNotFoundException e) {
                             e.printStackTrace();
-                        } finally {
-                            return uri;// 返回类型 Bitmap
                         }
+                        return uri;
                     }
-                })
-                .subscribe(new Action1<Uri>() {
+                }).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Uri>() {
                     @Override
-                    public void call(Uri uri) {
-                        if (uri != null)
-                            Tutil.t("success");
-                        else Tutil.t("fail");
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError");
+                        Tutil.t(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Uri uri) {
+                        File appDir = new File(Environment.getExternalStorageDirectory(), "GankIo");
+                        Log.e(TAG, "onNext++" + appDir.getAbsolutePath());
+                        String message = String.format("图片已保存到%s文件夹", appDir.getAbsolutePath());
+                        Tutil.t(message);
                     }
                 });
     }

@@ -10,4 +10,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_about">可爱的「关于」页面</string>
     <string name="action_notifiable">每天中午提醒</string>
+    <string name="action_not">"请勿重复保存"</string>
+    <string name="has_saved">已经保存了</string>
 </resources>
