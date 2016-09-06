@@ -54,4 +54,14 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
+    <ViewStub
+        android:id="@+id/stub_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/empty_layout"/>
+    <ViewStub
+        android:id="@+id/stub_video_web"
+        android:layout="@layout/video_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

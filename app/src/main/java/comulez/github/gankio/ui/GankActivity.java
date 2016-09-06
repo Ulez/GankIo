@@ -2,12 +2,16 @@ package comulez.github.gankio.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewStub;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -30,6 +34,8 @@ import comulez.github.gankio.data.Gank;
 import comulez.github.gankio.data.GankData;
 import comulez.github.gankio.ui.adapter.GankAdapter;
 import comulez.github.gankio.ui.base.ToolbarActivity;
+import comulez.github.gankio.util.Tutil;
+import comulez.github.gankio.widget.LoveVideoView;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -51,6 +57,9 @@ public class GankActivity extends ToolbarActivity {
     ImageView imPlay;
     @Bind(R.id.rv_ganks)
     RecyclerView rvGanks;
+    @Bind(R.id.stub_empty_view)
+    ViewStub stubEmptyView;
+    private ViewStub stubVideoWeb;
     private String TAG = "GankActivity";
     private OkHttpClient client;
     private List<Gank> gankList;
@@ -68,6 +77,7 @@ public class GankActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        stubVideoWeb= (ViewStub) findViewById(R.id.stub_video_web);
         parseIntent();
         initRecy();
         GankApi gankService = GankRetrofit.getmInstance().getmGankService();
@@ -113,14 +123,15 @@ public class GankActivity extends ToolbarActivity {
     }
 
     private void loadWeb() {
-        WebView webView=new WebView(mContext);
-        Log.e(TAG, "error,,"+"http://gank.io/"+year+"/"+month+"/"+day);
-        webView.loadUrl("http://gank.io/"+year+"/"+month+"/"+day);//加载的网页版gankio；
+        WebView webView = new WebView(mContext);
+        Log.e(TAG, "error,," + "http://gank.io/" + year + "/" + month + "/" + day);
+        webView.loadUrl("http://gank.io/" + year + "/" + month + "/" + day);//加载的网页版gankio；
         setContentView(webView);
     }
 
     /**
      * 包含网页url和预览图url；
+     *
      * @param allUrl
      * @return
      */
@@ -129,7 +140,7 @@ public class GankActivity extends ToolbarActivity {
         if (yy == -1)
             return allUrl;
         else
-            return allUrl.substring(yy+1, allUrl.length());
+            return allUrl.substring(yy + 1, allUrl.length());
     }
 
     private void parseIntent() {
@@ -187,7 +198,7 @@ public class GankActivity extends ToolbarActivity {
                 s0 = result.indexOf("<img src=");
             s1 = result.indexOf("http", s0);
             s2 = result.indexOf(".jpg", s1) + 4;
-            return "*" +result.substring(s1, s2);
+            return "*" + result.substring(s1, s2);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -196,7 +207,47 @@ public class GankActivity extends ToolbarActivity {
 
     @OnClick(R.id.im_play)
     public void onClick() {
+        resumeVideoView();
+        setViewBy(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (gankList.size() > 0 && gankList.get(0).type.equals("休息视频")) {
+            Tutil.t(getString(R.string.loading));
+        } else {
+            closePlayer();
+        }
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void setViewBy(int newConfig) {
+        switch (newConfig) {
+            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE://横屏
+                stubVideoWeb.inflate();
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                mVideoView= (LoveVideoView) findViewById(R.id.wv_video);
+                if (gankList.get(0).type.equals("休息视频"))
+                    mVideoView.loadUrl(gankList.get(0).url);
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT://竖屏
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            default:
+                stubVideoWeb.setVisibility(View.GONE);
+                break;
+        }
+    }
+    LoveVideoView mVideoView;
+    private void resumeVideoView() {
+        if (mVideoView != null) {
+            mVideoView.resumeTimers();
+            mVideoView.onResume();
+        }
+    }
+
+    void closePlayer() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Tutil.t(getString(R.string.tip_for_no_gank));
     }
 
     public static Intent newIntent(Context mContext, Date publishedAt) {
