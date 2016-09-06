@@ -26,7 +26,7 @@ public class Girl extends BaseModel {
     @Column("updatedAt")
     public Date updatedAt;
     @Column("publishedAt")
-    public Date publishedAt;
+    public String publishedAt;
     @Column("imageWidth")
     public int imageWidth;
     @Column("imageHeight")

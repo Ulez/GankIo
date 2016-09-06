@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +38,7 @@ import comulez.github.gankio.data.VedioData;
 import comulez.github.gankio.ui.adapter.GirlsListAdapter;
 import comulez.github.gankio.ui.base.SwipeRefreshInf;
 import comulez.github.gankio.ui.base.ToolbarActivity;
+import comulez.github.gankio.util.Tutil;
 import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
 import comulez.github.gankio.widget.MyImageView;
 import rx.Observable;
@@ -108,7 +111,20 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     });
 
                 } else if (v == gankDec) {
-                    startGankActivity(girl.publishedAt);
+                    Tutil.l(TAG, "girl.publishedAt=" + girl.publishedAt);
+                    java.text.SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String s = girl.publishedAt;
+                    s = s.replace("T", " ");
+                    s = s.replace("Z", "");
+                    Tutil.l(s);
+                    Date date = null;
+                    try {
+                        date = formatter.parse(s);
+                        startGankActivity(date);
+                    } catch (ParseException e) {
+                        Tutil.t("参数错误");
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -139,7 +155,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                         for (int i = 0; i < girlData.getResults().size(); i++) {
                             girlData.getResults().get(i).desc = vedioData.getResults().get(i).getDesc();
 //                            girlData.getResults().get(i).publishedAt = vedioData.getResults().get(i).getPublishedAt();
-                            Log.e(TAG,"position="+i+",girl,publishedAt="+girlData.getResults().get(i).publishedAt+",vedioData,publishedAt="+vedioData.getResults().get(i).getPublishedAt());
+                            Log.e(TAG, "position=" + i + ",girl,publishedAt=" + girlData.getResults().get(i).publishedAt + ",vedioData,publishedAt=" + vedioData.getResults().get(i).getPublishedAt());
                         }
                         return girlData;
                     }
@@ -184,9 +200,9 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                         }
                         mMeizhiList.addAll(girlData.getResults());
 //                        mMeizhiListAdapter.notifyDataSetChanged();
-                        if (clean){
+                        if (clean) {
                             mMeizhiListAdapter.notifyDataSetChanged();
-                        }else {
+                        } else {
                             mMeizhiListAdapter.notifyItemRangeChanged(start, 10);
                         }
                         setRefresh(false);
