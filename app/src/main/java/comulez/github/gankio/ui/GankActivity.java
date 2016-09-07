@@ -224,9 +224,8 @@ public class GankActivity extends ToolbarActivity {
     private void setViewBy(int newConfig) {
         switch (newConfig) {
             case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE://横屏
-                stubVideoWeb.inflate();
+                mVideoView= (LoveVideoView) stubVideoWeb.inflate();
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                mVideoView= (LoveVideoView) findViewById(R.id.wv_video);
                 if (gankList.get(0).type.equals("休息视频"))
                     mVideoView.loadUrl(gankList.get(0).url);
                 break;

@@ -153,7 +153,7 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     @Override
                     public GirlData call(GirlData girlData, VedioData vedioData) {
                         for (int i = 0; i < girlData.getResults().size(); i++) {
-                            girlData.getResults().get(i).desc = vedioData.getResults().get(i).getDesc();
+                            girlData.getResults().get(i).desc +="*"+ vedioData.getResults().get(i).getDesc();
 //                            girlData.getResults().get(i).publishedAt = vedioData.getResults().get(i).getPublishedAt();
                             Log.e(TAG, "position=" + i + ",girl,publishedAt=" + girlData.getResults().get(i).publishedAt + ",vedioData,publishedAt=" + vedioData.getResults().get(i).getPublishedAt());
                         }

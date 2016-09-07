@@ -8,10 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +28,8 @@ public class WebViewActivity extends ToolbarActivity {
     AppBarLayout appBarLayout;
     @Bind(R.id.webview)
     WebView webview;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
     private String url;
     private String desc;
     private String TAG = "WebViewActivity";
@@ -39,6 +43,7 @@ public class WebViewActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        progressBar.setVisibility(View.VISIBLE);
         parseIntent();
 
         WebSettings settings = webview.getSettings();
@@ -49,13 +54,27 @@ public class WebViewActivity extends ToolbarActivity {
         settings.setSupportZoom(true);
 
         if (!TextUtils.isEmpty(url)) {
-            url=handle(url);
+            url = handle(url);
             webview.setWebViewClient(new WebViewClient());
-            webview.setWebChromeClient(new WebChromeClient());
-            Log.e(TAG,"load_url="+url);
+            webview.setWebChromeClient(new ChromeClient());
+            Log.e(TAG, "load_url=" + url);
             webview.loadUrl(url);
         }
     }
+
+    private class ChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress<100){
+                progressBar.setProgress(newProgress);
+                progressBar.setVisibility(View.VISIBLE);
+            }else {
+                progressBar.setVisibility(View.GONE);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
+    }
+
     private String handle(String url) {
         int yy = url.indexOf("*");
         if (yy == -1)
@@ -63,6 +82,7 @@ public class WebViewActivity extends ToolbarActivity {
         else
             return url.substring(0, yy);
     }
+
     private void parseIntent() {
         Intent intent = getIntent();
         url = intent.getStringExtra(WEB_UEL);
@@ -81,6 +101,7 @@ public class WebViewActivity extends ToolbarActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private static String WEB_UEL = "url";
     private static String WEB_DESC = "desc";
 
