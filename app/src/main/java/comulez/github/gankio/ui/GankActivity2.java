@@ -3,7 +3,6 @@ package comulez.github.gankio.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -57,7 +56,6 @@ public class GankActivity2 extends ToolbarActivity {
         webview.setWebChromeClient(new WebChromeClient());
 
         GankApi gankService = GankRetrofit.getmInstance().getmGankService();
-        Log.e(TAG, "year=" + year + "month=" + month + "day=" + day);
         gankService
                 .getGankContent(year, month, day)
                 .subscribeOn(Schedulers.io())
@@ -66,22 +64,18 @@ public class GankActivity2 extends ToolbarActivity {
                 .subscribe(new Subscriber<Content>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError");
+
                     }
 
                     @Override
                     public void onNext(Content content) {
                         String data = content.getResults().get(0).getContent();
-                        Log.e(TAG, "onNext,data==" + data.substring(0, 100));
-
-//                        webview.loadData(data, "text/html; charset=UTF-8", null);//这种写法可以正确解码
                         webview.loadDataWithBaseURL(null, data, "text/html", "UTF-8", null);
-//                        webview.loadUrl("http://gank.io/"+year+"/"+month+"/"+day);//加载的网页版gankio；
                     }
                 });
 

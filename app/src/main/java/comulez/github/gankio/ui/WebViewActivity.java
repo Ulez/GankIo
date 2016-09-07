@@ -54,15 +54,14 @@ public class WebViewActivity extends ToolbarActivity {
         settings.setSupportZoom(true);
 
         if (!TextUtils.isEmpty(url)) {
-            url = handle(url);
-            webview.setWebViewClient(new WebViewClient());
-            webview.setWebChromeClient(new ChromeClient());
-            Log.e(TAG, "load_url=" + url);
+            webview.setWebViewClient(new MyWebViewClient());
+            webview.setWebChromeClient(new MyChromeClient());
+            Log.e(TAG, "web_video_url=" + url);
             webview.loadUrl(url);
         }
     }
 
-    private class ChromeClient extends WebChromeClient {
+    private class MyChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress<100){
@@ -74,20 +73,22 @@ public class WebViewActivity extends ToolbarActivity {
             super.onProgressChanged(view, newProgress);
         }
     }
+    private class MyWebViewClient extends WebViewClient {
 
-    private String handle(String url) {
-        int yy = url.indexOf("*");
-        if (yy == -1)
-            return url;
-        else
-            return url.substring(0, yy);
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url != null) view.loadUrl(url);
+            return true;
+        }
     }
+
 
     private void parseIntent() {
         Intent intent = getIntent();
         url = intent.getStringExtra(WEB_UEL);
+        if (url.indexOf("*")>0){
+            url=url.substring(0,url.indexOf("*"));
+        }
         desc = intent.getStringExtra(WEB_DESC);
-        Log.e(TAG, "url=" + url + ",desc=" + desc);
     }
 
     @Override
@@ -110,5 +111,23 @@ public class WebViewActivity extends ToolbarActivity {
         intent.putExtra(WEB_UEL, url);
         intent.putExtra(WEB_DESC, desc);
         return intent;
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        if (webview != null) webview.destroy();
+        ButterKnife.unbind(this);
+    }
+
+
+    @Override protected void onPause() {
+        if (webview != null) webview.onPause();
+        super.onPause();
+    }
+
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (webview != null) webview.onResume();
     }
 }

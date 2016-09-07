@@ -2,7 +2,6 @@ package comulez.github.gankio.widget;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.webkit.WebChromeClient;
@@ -47,12 +46,6 @@ public class LoveVideoView extends WebView {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setLoadWithOverviewMode(false);
         webSettings.setUseWideViewPort(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (Boolean.parseBoolean("true")) {
-                WebView.setWebContentsDebuggingEnabled(true);
-            }
-        }
     }
 
 

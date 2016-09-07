@@ -93,7 +93,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         mMeizhiListAdapter.setOnGirlClickListenr(new GirlsListAdapter.OnGirlClickListenr() {
             @Override
             public void onGirlClick(View v, final MyImageView imageView, TextView gankDec, final Girl girl) {
-                Log.e(TAG, "点击----");
                 if (girl == null) return;
                 if (v == imageView && !beTouched) {
                     beTouched = true;
@@ -111,7 +110,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     });
 
                 } else if (v == gankDec) {
-                    Tutil.l(TAG, "girl.publishedAt=" + girl.publishedAt);
                     java.text.SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String s = girl.publishedAt;
                     s = s.replace("T", " ");
@@ -142,7 +140,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     }
 
     private void startGankActivity(Date publishedAt) {
-        Log.e(TAG, "put publishedAt=" + publishedAt);
         startActivity(GankActivity.newIntent(mContext, publishedAt));
     }
 
@@ -154,8 +151,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                     public GirlData call(GirlData girlData, VedioData vedioData) {
                         for (int i = 0; i < girlData.getResults().size(); i++) {
                             girlData.getResults().get(i).desc +="*"+ vedioData.getResults().get(i).getDesc();
-//                            girlData.getResults().get(i).publishedAt = vedioData.getResults().get(i).getPublishedAt();
-                            Log.e(TAG, "position=" + i + ",girl,publishedAt=" + girlData.getResults().get(i).publishedAt + ",vedioData,publishedAt=" + vedioData.getResults().get(i).getPublishedAt());
                         }
                         return girlData;
                     }
