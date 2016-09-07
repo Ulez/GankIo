@@ -16,4 +16,6 @@
     <string name="loading">加载中...</string>
     <string name="url_github_trending">https://github.com/trending</string>
     <string name="url_login_github">https://github.com/login</string>
+    <string name="url_login_github_search">https://github.com/search?utf8=✓</string>
+    <string name="action_github_search">github搜索</string>
 </resources>

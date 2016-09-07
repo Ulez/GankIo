@@ -15,4 +15,9 @@
         android:title="@string/action_github_trending"
         android:orderInCategory="2"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/action_github_search"
+        android:orderInCategory="2"
+        app:showAsAction="never"/>
 </menu>

@@ -307,9 +307,20 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
             case R.id.action_trending:
                 openGitHubTrending();
                 return true;
+            case R.id.action_search:
+                openGitHubSearch();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void openGitHubSearch() {
+        String url = getString(R.string.url_login_github_search);
+        String title = getString(R.string.action_github_search);
+        Intent intent = WebViewActivity.newIntent(this, url, title);
+        startActivity(intent);
+    }
+
     private void openGitHubTrending() {
         String url = getString(R.string.url_github_trending);
         String title = getString(R.string.action_github_trending);
