@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 
@@ -61,6 +62,8 @@ public class GankActivity extends ToolbarActivity {
     @Bind(R.id.stub_empty_view)
     ViewStub stubEmptyView;
     LoveVideoView mVideoView;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
     private ViewStub mVideoViewStub;
     private String TAG = "GankActivity";
     private OkHttpClient client;
@@ -79,6 +82,7 @@ public class GankActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        progressBar.setVisibility(View.VISIBLE);
         mVideoViewStub = (ViewStub) findViewById(R.id.stub_video_web);
         parseIntent();
         initRecy();
@@ -106,12 +110,13 @@ public class GankActivity extends ToolbarActivity {
                 .subscribe(new Subscriber<GankData>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted");
+                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         loadWeb();
+                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -143,7 +148,7 @@ public class GankActivity extends ToolbarActivity {
 //                    // @formatter:on
                 }
                 if (gankList.size() > 0 && gankList.get(0).type.equals("休息视频")) {
-                    String url=new String(gankList.get(0).url);
+                    String url = new String(gankList.get(0).url);
                     mVideoView.loadUrl(handle(url));
                     appBarLayout.setVisibility(View.GONE);
                 } else
@@ -161,12 +166,13 @@ public class GankActivity extends ToolbarActivity {
     }
 
     private String handle(String url) {
-        Tutil.l(TAG,"完整_url="+url);
+        Tutil.l(TAG, "完整_url=" + url);
         int xxx = url.indexOf("*");
-        if (xxx >0) {
+        if (xxx > 0) {
             return url.substring(0, xxx);
         } else return url;
     }
+
     private void loadWeb() {
         WebView webView = new WebView(mContext);
         Log.e(TAG, "error,," + "http://gank.io/" + year + "/" + month + "/" + day);
@@ -313,20 +319,23 @@ public class GankActivity extends ToolbarActivity {
         return intent;
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         if (mVideoView != null) mVideoView.destroy();
         ButterKnife.unbind(this);
     }
 
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         if (mVideoView != null) mVideoView.onPause();
         super.onPause();
     }
 
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         if (mVideoView != null) mVideoView.onResume();
     }
