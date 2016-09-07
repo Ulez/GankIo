@@ -14,4 +14,6 @@
     <string name="has_saved">已经保存了</string>
     <string name="tip_for_no_gank">今天休息木有干货</string>
     <string name="loading">加载中...</string>
+    <string name="url_github_trending">https://github.com/trending</string>
+    <string name="url_login_github">https://github.com/login</string>
 </resources>

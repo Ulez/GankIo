@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -68,7 +67,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     private int mLastVideoIndex = 1;
     private String TAG = "MainActivity";
     private GirlsListAdapter mMeizhiListAdapter;
-    private LinearLayoutManager mLayoutManager;
     private RecyclerView.OnScrollListener onscrollListner;
     private boolean beTouched = false;
 
@@ -124,6 +122,12 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+        mainFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlMeizi.smoothScrollToPosition(0);
             }
         });
     }
@@ -293,8 +297,6 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.action_notifiable);
-        initNotifiableItemState(item);
         return true;
     }
 
@@ -303,12 +305,16 @@ public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_trending:
-//                openGitHubTrending();
-                return true;
-            case R.id.action_notifiable:
+                openGitHubTrending();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void openGitHubTrending() {
+        String url = getString(R.string.url_github_trending);
+        String title = getString(R.string.action_github_trending);
+        Intent intent = WebViewActivity.newIntent(this, url, title);
+        startActivity(intent);
     }
 
     private void initNotifiableItemState(MenuItem item) {
