@@ -1,334 +1,137 @@
 package comulez.github.gankio.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import comulez.github.gankio.GankApi;
-import comulez.github.gankio.GankRetrofit;
 import comulez.github.gankio.R;
-import comulez.github.gankio.data.Girl;
-import comulez.github.gankio.data.GirlData;
-import comulez.github.gankio.data.VedioData;
-import comulez.github.gankio.ui.adapter.GirlsListAdapter;
-import comulez.github.gankio.ui.base.SwipeRefreshInf;
-import comulez.github.gankio.ui.base.ToolbarActivity;
-import comulez.github.gankio.util.Tutil;
-import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
-import comulez.github.gankio.widget.MyImageView;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
-/**
- * Created by Ulez on 2016/8/12.
- * Email：lcy1532110757@gmail.com
- */
-public class MainActivity extends ToolbarActivity implements SwipeRefreshInf {
-    List<Girl> mMeizhiList = new ArrayList<>();
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.app_bar_layout)
-    AppBarLayout appBarLayout;
-    @Bind(R.id.rl_meizi)
-    RecyclerView rlMeizi;
-    @Bind(R.id.swipe_refresh_layout)
-    MultiSwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.main_fb)
-    FloatingActionButton mainFb;
-    private GankApi gankService;
-    private int mLastVideoIndex = 1;
-    private String TAG = "MainActivity";
-    private GirlsListAdapter mMeizhiListAdapter;
-    private RecyclerView.OnScrollListener onscrollListner;
-    private boolean beTouched = false;
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FragmentManager fManager;
+    private FragmentTransaction transaction;
+    private Fragment mCurrentFragment;
+    private GirlsFragment girlsFragment;
+    private NovelFragment novelFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        rlMeizi.setLayoutManager(layoutManager);
-        mMeizhiListAdapter = new GirlsListAdapter(mContext, mMeizhiList);
-        rlMeizi.setAdapter(mMeizhiListAdapter);
-        gankService = GankRetrofit.getmInstance().getmGankService();
-        loadData(true);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                mLastVideoIndex = 1;
-                loadData(true);
+            public void onClick(View view) {
+                Snackbar.make(view, "返回顶部", Snackbar.LENGTH_SHORT)
+                        .setAction("返回顶部", null).show();
             }
         });
-        rlMeizi.addOnScrollListener(getOnScrollListener(layoutManager));
-        mMeizhiListAdapter.setOnGirlClickListenr(new GirlsListAdapter.OnGirlClickListenr() {
-            @Override
-            public void onGirlClick(View v, final MyImageView imageView, TextView gankDec, final Girl girl) {
-                if (girl == null) return;
-                if (v == imageView && !beTouched) {
-                    beTouched = true;
-                    Picasso.with(mContext).load(girl.url).fetch(new Callback() {//加载完了再开启activity，防止activity动画错误；
-                        @Override
-                        public void onSuccess() {
-                            beTouched = false;
-                            startPicturAcitivity(imageView, girl);
-                        }
 
-                        @Override
-                        public void onError() {
-                            beTouched = false;
-                        }
-                    });
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-                } else if (v == gankDec) {
-                    java.text.SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String s = girl.publishedAt;
-                    s = s.replace("T", " ");
-                    s = s.replace("Z", "");
-                    Tutil.l(s);
-                    Date date = null;
-                    try {
-                        date = formatter.parse(s);
-                        startGankActivity(date);
-                    } catch (ParseException e) {
-                        Tutil.t("参数错误");
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        mainFb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlMeizi.smoothScrollToPosition(0);
-            }
-        });
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        fManager = getSupportFragmentManager();
+        /////
+        transaction = fManager.beginTransaction();
+//        transaction.replace(R.id.content, girlsFragment).commitAllowingStateLoss();
     }
 
-    private void startPicturAcitivity(MyImageView imageView, Girl girl) {
-        Intent intent = PictureActivity.newIntent(mContext, girl.desc, girl.url);
-        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, imageView, PictureActivity.TRANSIT_IMG);
-        try {
-            ActivityCompat.startActivity(MainActivity.this, intent, optionsCompat.toBundle());
-        } catch (Exception e) {
-            mContext.startActivity(intent);
-            e.printStackTrace();
-        }
-    }
-
-    private void startGankActivity(Date publishedAt) {
-        startActivity(GankActivity.newIntent(mContext, publishedAt));
-    }
-
-    private void loadData(final boolean clean) {
-        setRefresh(true);
-        Subscription s = Observable
-                .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
-                    @Override
-                    public GirlData call(GirlData girlData, VedioData vedioData) {
-                        for (int i = 0; i < girlData.getResults().size(); i++) {
-                            girlData.getResults().get(i).desc +="*"+ vedioData.getResults().get(i).getDesc();
-                        }
-                        return girlData;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GirlData>() {
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        Log.e(TAG, "onStart");
-                        setRefresh(true);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        Log.e(TAG, "onCompleted");
-                        setRefresh(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError");
-                        Snackbar.make(rlMeizi, R.string.snap_load_fail, Snackbar.LENGTH_LONG)
-                                .setAction("点击重试", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        loadData(false);
-                                    }
-                                }).show();
-                    }
-
-                    @Override
-                    public void onNext(GirlData girlData) {
-                        if (clean) {
-                            mMeizhiList.clear();
-                        }
-                        int start = 0;
-                        if (mMeizhiList != null) {
-                            start = mMeizhiList.size();
-                        }
-                        mMeizhiList.addAll(girlData.getResults());
-//                        mMeizhiListAdapter.notifyDataSetChanged();
-                        if (clean) {
-                            mMeizhiListAdapter.notifyDataSetChanged();
-                        } else {
-                            mMeizhiListAdapter.notifyItemRangeChanged(start, 10);
-                        }
-                        setRefresh(false);
-                    }
-                });
-
-        addSubscription(s);
-
-//        o.subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<GirlData>() {
-//                    @Override
-//                    public void onStart() {
-//                        super.onStart();
-//                        Log.e(TAG, "onStart");
-//                        Toast.makeText(mContext, "onStart", Toast.LENGTH_SHORT).show();
-//                        setRefresh(true);
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                        Log.e(TAG, "onCompleted");
-//                        Toast.makeText(mContext, "onCompleted", Toast.LENGTH_SHORT).show();
-//                        setRefresh(false);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.e(TAG, "onError");
-//                        Snackbar.make(rlMeizi, R.string.snap_load_fail, Snackbar.LENGTH_LONG)
-//                                .setAction("点击重试", new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        loadData();
-//                                    }
-//                                }).show();
-//                    }
-//
-//                    @Override
-//                    public void onNext(GirlData girlData) {
-//                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//                        rlMeizi.setLayoutManager(layoutManager);
-//                        mMeizhiListAdapter = new MeizhiListAdapter(mContext, girlData.getResults());
-//                        rlMeizi.setAdapter(mMeizhiListAdapter);
-//                    }
-//                });
-    }
-
-    @Override
-    protected int provideContentViewId() {
-        return R.layout.activity_main;
-    }
-
-    @Override
-    public void requestDataRefresh() {
-        loadData(true);
-    }
-
-    @Override
-    public void setRefresh(boolean refresh) {
-        if (swipeRefreshLayout == null)
+    /**
+     * 用来代替replace；
+     * 切换页面的重载，优化了fragment的切换
+     */
+    public void switchFragment(Fragment from, Fragment to) {
+        if (from == null )
             return;
-        swipeRefreshLayout.setRefreshing(refresh);
+        if (to==null)
+            GirlsFragment.newInstance("","");
+        if (!to.isAdded()) {
+            // 隐藏当前的fragment，add下一个到Activity中
+            transaction.hide(from).add(R.id.content, to).commitAllowingStateLoss();
+        } else {
+            // 隐藏当前的fragment，显示下一个
+            transaction.hide(from).show(to).commitAllowingStateLoss();
+        }
+        mCurrentFragment = to;//把当前的fragment保留；
     }
 
     @Override
-    public void setProgressViewOffset(boolean scale, int start, int end) {
-
-    }
-
-    @Override
-    public void setCanChildScrollUpCallback(MultiSwipeRefreshLayout.CanChildScrollUpCallback callback) {
-
-    }
-
-    public RecyclerView.OnScrollListener getOnScrollListener(final StaggeredGridLayoutManager layoutManager) {
-        onscrollListner = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int[] position = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
-                boolean isBottom = position[1] >= mMeizhiListAdapter.getItemCount() - 5;
-                if (isBottom && !swipeRefreshLayout.isRefreshing()) {
-                    mLastVideoIndex++;
-                    loadData(false);
-                }
-            }
-        };
-        return onscrollListner;
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_trending:
-                openGitHubTrending();
-                return true;
-            case R.id.action_search:
-                openGitHubSearch();
-                return true;
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
-    private void openGitHubSearch() {
-        String url = getString(R.string.url_login_github_search);
-        String title = getString(R.string.action_github_search);
-        Intent intent = WebViewActivity.newIntent(this, url, title);
-        startActivity(intent);
-    }
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
-    private void openGitHubTrending() {
-        String url = getString(R.string.url_github_trending);
-        String title = getString(R.string.action_github_trending);
-        Intent intent = WebViewActivity.newIntent(this, url, title);
-        startActivity(intent);
-    }
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
 
-    private void initNotifiableItemState(MenuItem item) {
+        } else if (id == R.id.nav_slideshow) {
 
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        switchFragment(mCurrentFragment,novelFragment);
+        return true;
     }
 }
