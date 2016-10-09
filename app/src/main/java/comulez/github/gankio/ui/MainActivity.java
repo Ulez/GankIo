@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity
         fManager = getSupportFragmentManager();
         /////
         transaction = fManager.beginTransaction();
-//        transaction.replace(R.id.content, girlsFragment).commitAllowingStateLoss();
+        NovelFragment x = NovelFragment.newInstance("", "");
+//        transaction.replace(R.id.content_main, x).commitAllowingStateLoss();
     }
 
     /**
@@ -64,13 +65,13 @@ public class MainActivity extends AppCompatActivity
      * 切换页面的重载，优化了fragment的切换
      */
     public void switchFragment(Fragment from, Fragment to) {
-        if (from == null )
+        if (from == null)
             return;
-        if (to==null)
-            GirlsFragment.newInstance("","");
+        if (to == null)
+            GirlsFragment.newInstance("", "");
         if (!to.isAdded()) {
             // 隐藏当前的fragment，add下一个到Activity中
-            transaction.hide(from).add(R.id.content, to).commitAllowingStateLoss();
+            transaction.hide(from).add(R.id.content_main, to).commitAllowingStateLoss();
         } else {
             // 隐藏当前的fragment，显示下一个
             transaction.hide(from).show(to).commitAllowingStateLoss();
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        switchFragment(mCurrentFragment,novelFragment);
+        switchFragment(mCurrentFragment, novelFragment);
         return true;
     }
 }

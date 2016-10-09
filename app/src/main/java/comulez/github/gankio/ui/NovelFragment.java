@@ -7,8 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.util.List;
+
+import comulez.github.gankio.NovelApi;
+import comulez.github.gankio.NovelRetrofit;
 import comulez.github.gankio.R;
+import comulez.github.gankio.data.NovelBean;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +38,7 @@ public class NovelFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Context context;
 
     public NovelFragment() {
         // Required empty public constructor
@@ -55,6 +65,7 @@ public class NovelFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getActivity();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -62,10 +73,31 @@ public class NovelFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_novel, container, false);
+        View view = inflater.inflate(R.layout.fragment_novel, container, false);
+        NovelApi novelService = NovelRetrofit.getmInstance().getmNovelService();
+        novelService
+                .getMonthRank(1)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<NovelBean.Novel>>() {
+            @Override
+            public void onCompleted() {
+                Toast.makeText(context,"onCompleted",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(context,"onError",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(List<NovelBean.Novel> novels) {
+                Toast.makeText(context,novels.get(0).getName(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -97,7 +129,7 @@ public class NovelFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
