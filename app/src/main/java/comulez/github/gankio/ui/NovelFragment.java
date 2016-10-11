@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,12 @@ public class NovelFragment extends Fragment {
         novelsAdpter = new NovelsAdpter(context, books);
         recyclerView.setAdapter(novelsAdpter);
         recyclerView.addOnScrollListener(getOnScrollListener(linearLayoutManager));
+        novelsAdpter.setOnItemClickListener(new NovelsAdpter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, NovelBean.Book book) {
+                Toast.makeText(context,position+book.getName(),Toast.LENGTH_SHORT).show();
+            }
+        });
         loadData(false);
         return view;
     }

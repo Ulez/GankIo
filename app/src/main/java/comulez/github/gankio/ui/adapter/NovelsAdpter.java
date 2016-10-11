@@ -57,6 +57,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ((NovelHolder) holder).tv_bookname.setText(book.getName());
                 ((NovelHolder) holder).tv_booktype.setText(book.getClasses());
                 ((NovelHolder) holder).last_chapter.setText("最新:" + book.getLastChapterName());
+                ((NovelHolder) holder).book = book;
                 break;
             default:
                 break;
@@ -65,16 +66,26 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-            return bookList.size()+1 ;
+        return bookList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        Log.e("LCY","position="+position);
-        if (position <bookList.size())
+        Log.e("LCY", "position=" + position);
+        if (position < bookList.size())
             return NORMAL;
         else
-        return MORE;
+            return MORE;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, NovelBean.Book book);
     }
 
     public class MoreHolder extends RecyclerView.ViewHolder {
@@ -98,14 +109,19 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Bind(R.id.ll)
         LinearLayout ll;
 
+        NovelBean.Book book;
+
         public NovelHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            if (onItemClickListener != null && book != null) {
+                onItemClickListener.onItemClick(getAdapterPosition(), book);
+            }
         }
     }
 }
