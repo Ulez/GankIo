@@ -51,13 +51,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        navigationView.setCheckedItem(R.id.nav_camera);
 
         fManager = getSupportFragmentManager();
-        /////
+
         transaction = fManager.beginTransaction();
-        NovelFragment x = NovelFragment.newInstance("", "");
-//        transaction.replace(R.id.content_main, x).commitAllowingStateLoss();
+        transaction.replace(R.id.content_main, NovelFragment.newInstance("","")).commitAllowingStateLoss();
     }
 
     /**

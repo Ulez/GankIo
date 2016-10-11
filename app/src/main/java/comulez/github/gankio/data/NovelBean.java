@@ -1,8 +1,5 @@
 package comulez.github.gankio.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 /**
@@ -10,50 +7,138 @@ import java.util.List;
  * Email：lcy1532110757@gmail.com
  */
 public class NovelBean {
-    private int id;
-    private String name;
-    private List<Novel> novels;
-
-    public int getId() {
-        return id;
+    private int type;
+    private int total;
+    private boolean success;
+    private String errorlog;
+    private int sortType;
+    private String keyWord;
+    private String check_word;
+    private int allTotal;
+    private List<ItemsEntity> items;
+    private List<Book> charge_book_items;
+    private List<Book> all_book_items;
+    private List<Book> guess_like_items;
+    public int getType() {
+        return type;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public int getTotal() {
+        return total;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
-    public List<Novel> getNovels() {
-        return novels;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setNovels(List<Novel> novels) {
-        this.novels = novels;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
-    public static class Novel implements Parcelable {
-        private int id;
+    public String getErrorlog() {
+        return errorlog;
+    }
+
+    public void setErrorlog(String errorlog) {
+        this.errorlog = errorlog;
+    }
+
+    public int getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(int sortType) {
+        this.sortType = sortType;
+    }
+
+    public String getKeyWord() {
+        return keyWord;
+    }
+
+    public void setKeyWord(String keyWord) {
+        this.keyWord = keyWord;
+    }
+
+    public String getCheck_word() {
+        return check_word;
+    }
+
+    public void setCheck_word(String check_word) {
+        this.check_word = check_word;
+    }
+
+    public int getAllTotal() {
+        return allTotal;
+    }
+
+    public void setAllTotal(int allTotal) {
+        this.allTotal = allTotal;
+    }
+
+    public List<ItemsEntity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemsEntity> items) {
+        this.items = items;
+    }
+
+    public List<Book> getCharge_book_items() {
+        return charge_book_items;
+    }
+
+    public void setCharge_book_items(List<Book> charge_book_items) {
+        this.charge_book_items = charge_book_items;
+    }
+
+    public List<Book> getAll_book_items() {
+        return all_book_items;
+    }
+
+    public void setAll_book_items(List<Book> all_book_items) {
+        this.all_book_items = all_book_items;
+    }
+
+    public List<Book> getGuess_like_items() {
+        return guess_like_items;
+    }
+
+    public void setGuess_like_items(List<Book> guess_like_items) {
+        this.guess_like_items = guess_like_items;
+    }
+
+    public static class ItemsEntity {
         private String name;
+        private String classes;
+        private String desc;
+        private String status;
+        private int gid;
+        private String category;
+        private int nid;
         private String author;
-        private String pic;
-        private String article_num;
-        private String last_update;
-        private boolean is_serializing;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
+        private String site;
+        private int chargeGid;
+        private boolean tempFree;
+        private int activityType;
+        private String cpId;
+        private String sourceId;
+        private String imgUrl;
+        private String lastChapterName;
+        private int chapterCount;
+        private long lastTime;
+        private int subscribeCount;
+        private int siteCount;
+        private int charge;
+        private int topicGroupId;
+        private int topicNum;
 
         public String getName() {
             return name;
@@ -61,6 +146,54 @@ public class NovelBean {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getClasses() {
+            return classes;
+        }
+
+        public void setClasses(String classes) {
+            this.classes = classes;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public int getGid() {
+            return gid;
+        }
+
+        public void setGid(int gid) {
+            this.gid = gid;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public int getNid() {
+            return nid;
+        }
+
+        public void setNid(int nid) {
+            this.nid = nid;
         }
 
         public String getAuthor() {
@@ -71,77 +204,334 @@ public class NovelBean {
             this.author = author;
         }
 
-        public String getPic() {
-            return pic;
+        public String getSite() {
+            return site;
         }
 
-        public void setPic(String pic) {
-            this.pic = pic;
+        public void setSite(String site) {
+            this.site = site;
         }
 
-        public String getArticle_num() {
-            return article_num;
+        public int getChargeGid() {
+            return chargeGid;
         }
 
-        public void setArticle_num(String article_num) {
-            this.article_num = article_num;
+        public void setChargeGid(int chargeGid) {
+            this.chargeGid = chargeGid;
         }
 
-        public String getLast_update() {
-            return last_update;
+        public boolean isTempFree() {
+            return tempFree;
         }
 
-        public void setLast_update(String last_update) {
-            this.last_update = last_update;
+        public void setTempFree(boolean tempFree) {
+            this.tempFree = tempFree;
         }
 
-        public boolean isIs_serializing() {
-            return is_serializing;
+        public int getActivityType() {
+            return activityType;
         }
 
-        public void setIs_serializing(boolean is_serializing) {
-            this.is_serializing = is_serializing;
+        public void setActivityType(int activityType) {
+            this.activityType = activityType;
         }
 
-        @Override
-        public int describeContents() {
-            return 0;
+        public String getCpId() {
+            return cpId;
         }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeString(this.name);
-            dest.writeString(this.author);
-            dest.writeString(this.pic);
-            dest.writeString(this.article_num);
-            dest.writeString(this.last_update);
-            dest.writeByte(is_serializing ? (byte) 1 : (byte) 0);
+        public void setCpId(String cpId) {
+            this.cpId = cpId;
         }
 
-        public Novel() {
+        public String getSourceId() {
+            return sourceId;
         }
 
-        protected Novel(Parcel in) {
-            this.id = in.readInt();
-            this.name = in.readString();
-            this.author = in.readString();
-            this.pic = in.readString();
-            this.article_num = in.readString();
-            this.last_update = in.readString();
-            this.is_serializing = in.readByte() != 0;
+        public void setSourceId(String sourceId) {
+            this.sourceId = sourceId;
         }
 
-        public static final Parcelable.Creator<Novel> CREATOR = new Parcelable.Creator<Novel>() {
-            @Override
-            public Novel createFromParcel(Parcel source) {
-                return new Novel(source);
-            }
+        public String getImgUrl() {
+            return imgUrl;
+        }
 
-            @Override
-            public Novel[] newArray(int size) {
-                return new Novel[size];
-            }
-        };
+        public void setImgUrl(String imgUrl) {
+            this.imgUrl = imgUrl;
+        }
+
+        public String getLastChapterName() {
+            return lastChapterName;
+        }
+
+        public void setLastChapterName(String lastChapterName) {
+            this.lastChapterName = lastChapterName;
+        }
+
+        public int getChapterCount() {
+            return chapterCount;
+        }
+
+        public void setChapterCount(int chapterCount) {
+            this.chapterCount = chapterCount;
+        }
+
+        public long getLastTime() {
+            return lastTime;
+        }
+
+        public void setLastTime(long lastTime) {
+            this.lastTime = lastTime;
+        }
+
+        public int getSubscribeCount() {
+            return subscribeCount;
+        }
+
+        public void setSubscribeCount(int subscribeCount) {
+            this.subscribeCount = subscribeCount;
+        }
+
+        public int getSiteCount() {
+            return siteCount;
+        }
+
+        public void setSiteCount(int siteCount) {
+            this.siteCount = siteCount;
+        }
+
+        public int getCharge() {
+            return charge;
+        }
+
+        public void setCharge(int charge) {
+            this.charge = charge;
+        }
+
+        public int getTopicGroupId() {
+            return topicGroupId;
+        }
+
+        public void setTopicGroupId(int topicGroupId) {
+            this.topicGroupId = topicGroupId;
+        }
+
+        public int getTopicNum() {
+            return topicNum;
+        }
+
+        public void setTopicNum(int topicNum) {
+            this.topicNum = topicNum;
+        }
+    }
+
+    public static class Book {
+        private String name;
+        private String classes;
+        private String desc;
+        private String status;
+        private int gid;
+        private String category;
+        private int nid;
+        private String author;
+        private String site;
+        private int chargeGid;
+        private boolean tempFree;
+        private int activityType;
+        private String cpId;
+        private String sourceId;
+        private String imgUrl;
+        private String lastChapterName;
+        private int chapterCount;
+        private long lastTime;
+        private int subscribeCount;
+        private int siteCount;
+        private int charge;
+        private int topicGroupId;
+        private int topicNum;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getClasses() {
+            return classes;
+        }
+
+        public void setClasses(String classes) {
+            this.classes = classes;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public int getGid() {
+            return gid;
+        }
+
+        public void setGid(int gid) {
+            this.gid = gid;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public int getNid() {
+            return nid;
+        }
+
+        public void setNid(int nid) {
+            this.nid = nid;
+        }
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public String getSite() {
+            return site;
+        }
+
+        public void setSite(String site) {
+            this.site = site;
+        }
+
+        public int getChargeGid() {
+            return chargeGid;
+        }
+
+        public void setChargeGid(int chargeGid) {
+            this.chargeGid = chargeGid;
+        }
+
+        public boolean isTempFree() {
+            return tempFree;
+        }
+
+        public void setTempFree(boolean tempFree) {
+            this.tempFree = tempFree;
+        }
+
+        public int getActivityType() {
+            return activityType;
+        }
+
+        public void setActivityType(int activityType) {
+            this.activityType = activityType;
+        }
+
+        public String getCpId() {
+            return cpId;
+        }
+
+        public void setCpId(String cpId) {
+            this.cpId = cpId;
+        }
+
+        public String getSourceId() {
+            return sourceId;
+        }
+
+        public void setSourceId(String sourceId) {
+            this.sourceId = sourceId;
+        }
+
+        public String getImgUrl() {
+            return imgUrl;
+        }
+
+        public void setImgUrl(String imgUrl) {
+            this.imgUrl = imgUrl;
+        }
+
+        public String getLastChapterName() {
+            return lastChapterName;
+        }
+
+        public void setLastChapterName(String lastChapterName) {
+            this.lastChapterName = lastChapterName;
+        }
+
+        public int getChapterCount() {
+            return chapterCount;
+        }
+
+        public void setChapterCount(int chapterCount) {
+            this.chapterCount = chapterCount;
+        }
+
+        public long getLastTime() {
+            return lastTime;
+        }
+
+        public void setLastTime(long lastTime) {
+            this.lastTime = lastTime;
+        }
+
+        public int getSubscribeCount() {
+            return subscribeCount;
+        }
+
+        public void setSubscribeCount(int subscribeCount) {
+            this.subscribeCount = subscribeCount;
+        }
+
+        public int getSiteCount() {
+            return siteCount;
+        }
+
+        public void setSiteCount(int siteCount) {
+            this.siteCount = siteCount;
+        }
+
+        public int getCharge() {
+            return charge;
+        }
+
+        public void setCharge(int charge) {
+            this.charge = charge;
+        }
+
+        public int getTopicGroupId() {
+            return topicGroupId;
+        }
+
+        public void setTopicGroupId(int topicGroupId) {
+            this.topicGroupId = topicGroupId;
+        }
+
+        public int getTopicNum() {
+            return topicNum;
+        }
+
+        public void setTopicNum(int topicNum) {
+            this.topicNum = topicNum;
+        }
     }
 }

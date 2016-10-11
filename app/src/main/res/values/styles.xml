@@ -42,6 +42,12 @@
         <item name="android:textSize">@dimen/material_button_text_size</item>
         <item name="android:layout_gravity">center</item>
     </style>
+    <style name="NovelTextview">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/md_grey_500</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
