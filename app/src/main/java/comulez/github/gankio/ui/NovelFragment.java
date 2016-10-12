@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class NovelFragment extends Fragment {
     private NovelsAdpter novelsAdpter;
     private RecyclerView.OnScrollListener onscrollListner;
     private int page_id =1;
+    private ProgressBar pb_loading;
 
     public NovelFragment() {
     }
@@ -64,6 +66,7 @@ public class NovelFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_books);
+        pb_loading = (ProgressBar) view.findViewById(R.id.pg_loading);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
@@ -119,6 +122,8 @@ public class NovelFragment extends Fragment {
                             books.clear();
                         books.addAll(novelBean);
                         novelsAdpter.notifyDataSetChanged();
+                        pb_loading.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                     }
                 });
     }
