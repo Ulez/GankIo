@@ -21,7 +21,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ReadActivity extends AppCompatActivity {
+public class ReadActivity extends AppCompatActivity implements MyScrollView.LoadMoreListener {
 
     ArrayList<ChapterItem> chapterItems;
     @Bind(R.id.chapterName)
@@ -32,7 +32,7 @@ public class ReadActivity extends AppCompatActivity {
     ProgressBar pb;
     @Bind(R.id.scrollView)
     MyScrollView scrollView;
-    private int position;
+    private int mPosition;
     private int firstX;
     private int firstY;
     private int lastX;
@@ -45,34 +45,35 @@ public class ReadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_read);
         ButterKnife.bind(this);
         parse(getIntent());
-        scrollView.setLoadMoreListener(new MyScrollView.LoadMoreListener() {
-            @Override
-            public void loadData(boolean isLoading, int position) {
-
-            }
-        },position,isLoading);
+        scrollView.setLoadMoreListener(this, mPosition, isLoading);
     }
 
     private void parse(Intent intent) {
         if (intent != null) {
             chapterItems = intent.getParcelableArrayListExtra("chapterItems");
-            position = intent.getIntExtra("position", -1);
+            mPosition = intent.getIntExtra("mPosition", -1);
         } else {
             return;
         }
-        if (position >= 0) {
+        if (mPosition >= 0) {
             isLoading = false;
-            loadData(isLoading);
+            loadData324(isLoading, mPosition);
         }
     }
 
-    private void loadData(boolean isLoading) {
-        if (isLoading)
-            return;
+    public static Intent newIntent(Context context, ArrayList<ChapterItem> chapterItems, int position) {
+        Intent intent = new Intent(context, ReadActivity.class);
+        intent.putParcelableArrayListExtra("chapterItems", chapterItems);
+        intent.putExtra("mPosition", position);
+        return intent;
+    }
+
+    @Override
+    public void loadData324(boolean isLoading, int position) {
         this.isLoading = true;
         pb.setVisibility(View.VISIBLE);
         NovelRetrofit.getmInstance().getmNovelService()
-                .getChapter(chapterItems.get(position).getId())
+                .getChapter(chapterItems.get(mPosition).getId())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Chapter>() {
@@ -96,12 +97,5 @@ public class ReadActivity extends AppCompatActivity {
                 ReadActivity.this.isLoading = false;
             }
         });
-    }
-
-    public static Intent newIntent(Context context, ArrayList<ChapterItem> chapterItems, int position) {
-        Intent intent = new Intent(context, ReadActivity.class);
-        intent.putParcelableArrayListExtra("chapterItems", chapterItems);
-        intent.putExtra("position", position);
-        return intent;
     }
 }

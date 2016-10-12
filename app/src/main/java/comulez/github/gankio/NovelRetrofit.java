@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class NovelRetrofit {
     private static NovelRetrofit mInstance;
-    private final long DEFAULT_TIMEOUT = 10;
+    private final long DEFAULT_TIMEOUT = 30;
     private final String BASE_URL = "http://api.novelking.cc";
     private NovelApi mNovelService;
     private Retrofit retrofit;
