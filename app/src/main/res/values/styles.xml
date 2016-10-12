@@ -19,6 +19,10 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/md_blue_700</item>
     </style>
+    <style name="ViaTextAppearance2">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/md_black_1000</item>
+    </style>
 
     <style name="LisPaddingStyle">
         <item name="android:paddingBottom">16dp</item>

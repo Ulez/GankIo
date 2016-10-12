@@ -46,6 +46,6 @@
         <TextView
             style="@style/NovelTextview"
             android:text="更新至1056章"
-            android:id="@+id/tv_last_chapter" />
+            android:id="@+id/tv_last_update" />
     </LinearLayout>
 </RelativeLayout>

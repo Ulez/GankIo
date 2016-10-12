@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import comulez.github.gankio.NovelActivity;
 import comulez.github.gankio.NovelApi;
 import comulez.github.gankio.NovelRetrofit;
 import comulez.github.gankio.R;
@@ -76,7 +76,8 @@ public class NovelFragment extends Fragment {
         novelsAdpter.setOnItemClickListener(new NovelsAdpter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, Bookcc book) {
-                Toast.makeText(context,position+book.getName(),Toast.LENGTH_SHORT).show();
+                Log.e(TAG,"id="+book.getId());
+                context.startActivity(NovelActivity.newIntence(context,book));
             }
         });
         loadData(false);

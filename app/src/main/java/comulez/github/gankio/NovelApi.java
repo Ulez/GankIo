@@ -1,10 +1,15 @@
 package comulez.github.gankio;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import comulez.github.gankio.data.BookDetail;
+import comulez.github.gankio.data.Chapter;
+import comulez.github.gankio.data.ChapterItem;
 import comulez.github.gankio.data.NovelBean;
 import comulez.github.gankio.data.Bookcc;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -37,6 +42,19 @@ public interface NovelApi {
     //http://api.novelking.cc/api/v1/novels/this_month_hot.json?page={page}//本月排行
     @GET("/api/v1/novels/this_month_hot.json")
     Observable<List<Bookcc>> getMonthRank(@Query("page") int page);
+
+    //http://api.novelking.cc/api/v1/novels/{小说ID}.json
+    @GET("/api/v1/novels/{id}.json")
+    Observable<BookDetail> getBookDetail(@Path("id") int id);
+
+    //http://api.novelking.cc/api/v1/articles/articles_by_num.json?novel_id=19350&order=true
+    @GET("/api/v1/articles/articles_by_num.json")
+    Observable<ArrayList<ChapterItem>> getBookChapters(@Query("novel_id") int novel_id, @Query("order") boolean order);
+
+
+    //http://api.novelking.cc/api/v1/articles/11012726.json
+    @GET("/api/v1/articles/{id}.json")
+    Observable<Chapter> getChapter(@Path("id") int id);
 
     //http://api.novelking.cc/api/v1/novels/hot.json?page={page}//总人气排行
     @GET("/api/v1/novels/hot.json")

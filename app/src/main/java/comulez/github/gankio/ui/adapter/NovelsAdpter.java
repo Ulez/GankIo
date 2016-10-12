@@ -55,7 +55,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .into(((NovelHolder) holder).iv_book);
                 ((NovelHolder) holder).author.setText(book.getAuthor() + " 著");
                 ((NovelHolder) holder).tv_bookname.setText(book.getName());
-                ((NovelHolder) holder).tv_booktype.setText(book.getLast_update());
+                ((NovelHolder) holder).tv_booktype.setText(""+book.getLast_update());
                 ((NovelHolder) holder).last_chapter.setText("最新:" + book.getArticle_num());
                 ((NovelHolder) holder).book = book;
                 break;
@@ -104,7 +104,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView author;
         @Bind(R.id.tv_booktype)
         TextView tv_booktype;
-        @Bind(R.id.tv_last_chapter)
+        @Bind(R.id.tv_last_update)
         TextView last_chapter;
         @Bind(R.id.ll)
         LinearLayout ll;
