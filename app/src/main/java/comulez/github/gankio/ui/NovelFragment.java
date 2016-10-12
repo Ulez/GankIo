@@ -17,7 +17,7 @@ import java.util.List;
 import comulez.github.gankio.NovelApi;
 import comulez.github.gankio.NovelRetrofit;
 import comulez.github.gankio.R;
-import comulez.github.gankio.data.NovelBean;
+import comulez.github.gankio.data.Bookcc;
 import comulez.github.gankio.ui.adapter.DividerItemDecoration;
 import comulez.github.gankio.ui.adapter.NovelsAdpter;
 import rx.Subscriber;
@@ -32,7 +32,7 @@ public class NovelFragment extends Fragment {
     private Context context;
     private String TAG = "NovelFragment";
     private RecyclerView recyclerView;
-    private List<NovelBean.Book> books = new ArrayList<>();
+    private List<Bookcc> books = new ArrayList<>();
     private NovelsAdpter novelsAdpter;
     private RecyclerView.OnScrollListener onscrollListner;
     private int page_id =1;
@@ -72,7 +72,7 @@ public class NovelFragment extends Fragment {
         recyclerView.addOnScrollListener(getOnScrollListener(linearLayoutManager));
         novelsAdpter.setOnItemClickListener(new NovelsAdpter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position, NovelBean.Book book) {
+            public void onItemClick(int position, Bookcc book) {
                 Toast.makeText(context,position+book.getName(),Toast.LENGTH_SHORT).show();
             }
         });
@@ -98,12 +98,11 @@ public class NovelFragment extends Fragment {
 
     private void loadData(final boolean clear) {
         NovelApi novelService = NovelRetrofit.getmInstance().getmNovelService();
-        novelService
-                .getYishou("玄幻",2,page_id,20,0,"eef_easou_book","002","android","1D6306147D6D13B28807856B31ED272E",1033,"blp1298_10269_001","j2fSuyqnF1Zh4GY7Q4M2HxNASbH4c")
+        novelService.getAllRank(page_id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NovelBean>() {
+                .subscribe(new Subscriber<List<Bookcc>>() {
                     @Override
                     public void onCompleted() {
                         Log.e(TAG, "onCompleted");
@@ -115,10 +114,10 @@ public class NovelFragment extends Fragment {
                     }
 
                     @Override
-                    public void onNext(NovelBean novelBean) {
+                    public void onNext(List<Bookcc> novelBean) {
                         if (clear)
                             books.clear();
-                        books.addAll(novelBean.getAll_book_items());
+                        books.addAll(novelBean);
                         novelsAdpter.notifyDataSetChanged();
                     }
                 });

@@ -17,19 +17,19 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import comulez.github.gankio.R;
-import comulez.github.gankio.data.NovelBean;
+import comulez.github.gankio.data.Bookcc;
 
 /**
  * Created by Ulez on 2016/10/11.
  * Email：lcy1532110757@gmail.com
  */
 public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<NovelBean.Book> bookList;
+    private List<Bookcc> bookList;
     private Context mContext;
     private static final int MORE = 2;
     private static final int NORMAL = 1;
 
-    public NovelsAdpter(Context context, List<NovelBean.Book> list) {
+    public NovelsAdpter(Context context, List<Bookcc> list) {
         mContext = context;
         bookList = list;
     }
@@ -48,15 +48,15 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case NORMAL:
-                NovelBean.Book book = bookList.get(position);
+                Bookcc book = bookList.get(position);
                 Glide.with(mContext)
-                        .load(book.getImgUrl())
+                        .load(book.getPic())
                         .centerCrop()
                         .into(((NovelHolder) holder).iv_book);
                 ((NovelHolder) holder).author.setText(book.getAuthor() + " 著");
                 ((NovelHolder) holder).tv_bookname.setText(book.getName());
-                ((NovelHolder) holder).tv_booktype.setText(book.getClasses());
-                ((NovelHolder) holder).last_chapter.setText("最新:" + book.getLastChapterName());
+                ((NovelHolder) holder).tv_booktype.setText(book.getLast_update());
+                ((NovelHolder) holder).last_chapter.setText("最新:" + book.getArticle_num());
                 ((NovelHolder) holder).book = book;
                 break;
             default:
@@ -85,7 +85,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, NovelBean.Book book);
+        void onItemClick(int position, Bookcc book);
     }
 
     public class MoreHolder extends RecyclerView.ViewHolder {
@@ -109,7 +109,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Bind(R.id.ll)
         LinearLayout ll;
 
-        NovelBean.Book book;
+        Bookcc book;
 
         public NovelHolder(View itemView) {
             super(itemView);

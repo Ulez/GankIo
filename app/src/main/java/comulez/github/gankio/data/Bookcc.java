@@ -1,20 +1,13 @@
 package comulez.github.gankio.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Ulez on 2016/10/11.
  * Email：lcy1532110757@gmail.com
  */
-public class RecmendBean {
-
-    /**
-     * article_num : 1606篇
-     * author : 凸透神瑛
-     * id : 19350
-     * is_serializing : true
-     * last_update : 16-10-11
-     * name : 意念成魔
-     * pic : htt6465s.jpg
-     */
+public class Bookcc implements Parcelable {
 
     private String article_num;
     private String author;
@@ -79,4 +72,45 @@ public class RecmendBean {
     public void setPic(String pic) {
         this.pic = pic;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.article_num);
+        dest.writeString(this.author);
+        dest.writeInt(this.id);
+        dest.writeByte(is_serializing ? (byte) 1 : (byte) 0);
+        dest.writeString(this.last_update);
+        dest.writeString(this.name);
+        dest.writeString(this.pic);
+    }
+
+    public Bookcc() {
+    }
+
+    protected Bookcc(Parcel in) {
+        this.article_num = in.readString();
+        this.author = in.readString();
+        this.id = in.readInt();
+        this.is_serializing = in.readByte() != 0;
+        this.last_update = in.readString();
+        this.name = in.readString();
+        this.pic = in.readString();
+    }
+
+    public static final Parcelable.Creator<Bookcc> CREATOR = new Parcelable.Creator<Bookcc>() {
+        @Override
+        public Bookcc createFromParcel(Parcel source) {
+            return new Bookcc(source);
+        }
+
+        @Override
+        public Bookcc[] newArray(int size) {
+            return new Bookcc[size];
+        }
+    };
 }
