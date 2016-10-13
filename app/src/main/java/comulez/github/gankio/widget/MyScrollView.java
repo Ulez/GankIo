@@ -41,9 +41,9 @@ public class MyScrollView extends ScrollView {
                 lastY = (int) event.getRawY();
                 if (firstX != 0 && firstY != 0 && lastX != 0 && lastY != 0 && Math.abs(lastX - firstX) > Math.abs(lastY - firstY)) {
                     if (lastX - firstX > 0) {
-                        position++;
-                    } else {
                         position--;
+                    } else {
+                        position++;
                     }
                     if (loadMoreListener != null)
                         loadMoreListener.loadData324(isLoading, position);

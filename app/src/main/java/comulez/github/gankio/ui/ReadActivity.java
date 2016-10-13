@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -72,8 +74,9 @@ public class ReadActivity extends AppCompatActivity implements MyScrollView.Load
     public void loadData324(boolean isLoading, int position) {
         this.isLoading = true;
         pb.setVisibility(View.VISIBLE);
+        Log.e("lcy","position="+position) ;
         NovelRetrofit.getmInstance().getmNovelService()
-                .getChapter(chapterItems.get(mPosition).getId())
+                .getChapter(chapterItems.get(position).getId())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Chapter>() {
@@ -95,6 +98,7 @@ public class ReadActivity extends AppCompatActivity implements MyScrollView.Load
                 chapterContent.setText(chapter.getText());
                 pb.setVisibility(View.GONE);
                 ReadActivity.this.isLoading = false;
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
             }
         });
     }
