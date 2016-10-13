@@ -51,13 +51,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_novel);
+        navigationView.setCheckedItem(R.id.nav_girl);
         girlFragment = GirlFragment.newInstance("","");
         novelFragment = NovelFragment.newInstance("","");
-        mCurrentFragment=novelFragment;
+        mCurrentFragment=girlFragment;
         transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_main, mCurrentFragment).commitAllowingStateLoss();
-        toolbar.setTitle(getString(R.string.novel));
+        toolbar.setTitle(getString(R.string.girl));
     }
 
     /**

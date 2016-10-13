@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GankRetrofit {
 
     private static GankRetrofit mInstance;
-    private final long DEFAULT_TIMEOUT = 10;
+    private final long DEFAULT_TIMEOUT = 30;
     private final String BASE_URL = "http://gank.io";
     private GankApi mGankService;
     private Retrofit retrofit;

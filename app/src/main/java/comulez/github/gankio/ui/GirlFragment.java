@@ -4,7 +4,6 @@ package comulez.github.gankio.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -62,8 +61,6 @@ public class GirlFragment extends Fragment {
     RecyclerView rlMeizi;
     @Bind(R.id.swipe_refresh_layout)
     MultiSwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.main_fb)
-    FloatingActionButton mainFb;
 
     private GankApi gankService;
     private int mLastVideoIndex = 1;
@@ -166,12 +163,6 @@ public class GirlFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
-            }
-        });
-        mainFb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlMeizi.smoothScrollToPosition(0);
             }
         });
         return view;

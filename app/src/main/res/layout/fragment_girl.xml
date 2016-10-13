@@ -1,36 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <comulez.github.gankio.widget.MultiSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rl_meizi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/md_purple_200" />
     </comulez.github.gankio.widget.MultiSwipeRefreshLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/main_fb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_margin="5dp"
-        android:clickable="true"
-        android:src="@mipmap/ic_github"
-        app:backgroundTint="@color/md_blue_500"
-        app:borderWidth="0dp"
-        app:elevation="4dp"
-        app:layout_anchor="@id/swipe_refresh_layout"
-        app:layout_anchorGravity="right|bottom"
-        app:layout_behavior="comulez.github.gankio.widget.ScrollAwareFABBehavior"
-        app:pressedTranslationZ="12dp"
-        app:rippleColor="@color/md_black_1000" />
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
