@@ -113,9 +113,6 @@ public class GirlFragment extends Fragment {
         mContext=getActivity();
         View view = inflater.inflate(R.layout.fragment_girl, container, false);
         ButterKnife.bind(this, view);
-
-        swipeRefreshLayout.setRefreshing(true);
-
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         rlMeizi.setLayoutManager(layoutManager);
         mMeizhiListAdapter = new GirlsListAdapter(mContext, mMeizhiList);
@@ -185,7 +182,7 @@ public class GirlFragment extends Fragment {
     }
 
     private void loadData(final boolean clean) {
-//        setRefresh(true);
+        swipeRefreshLayout.setRefreshing(true);
         Subscription s = Observable
                 .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
                     @Override
