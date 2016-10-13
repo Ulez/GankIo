@@ -37,7 +37,6 @@ import comulez.github.gankio.data.GirlData;
 import comulez.github.gankio.data.VedioData;
 import comulez.github.gankio.ui.adapter.GirlsListAdapter;
 import comulez.github.gankio.util.Tutil;
-import comulez.github.gankio.widget.MultiSwipeRefreshLayout;
 import comulez.github.gankio.widget.MyImageView;
 import rx.Observable;
 import rx.Subscriber;
@@ -60,7 +59,7 @@ public class GirlFragment extends Fragment {
     @Bind(R.id.rl_meizi)
     RecyclerView rlMeizi;
     @Bind(R.id.swipe_refresh_layout)
-    MultiSwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout  swipeRefreshLayout;
 
     private GankApi gankService;
     private int mLastVideoIndex = 1;
@@ -114,6 +113,8 @@ public class GirlFragment extends Fragment {
         mContext=getActivity();
         View view = inflater.inflate(R.layout.fragment_girl, container, false);
         ButterKnife.bind(this, view);
+
+        swipeRefreshLayout.setRefreshing(true);
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         rlMeizi.setLayoutManager(layoutManager);
@@ -184,7 +185,7 @@ public class GirlFragment extends Fragment {
     }
 
     private void loadData(final boolean clean) {
-        setRefresh(true);
+//        setRefresh(true);
         Subscription s = Observable
                 .zip(gankService.getGirlData(mLastVideoIndex), gankService.getVedioData(mLastVideoIndex), new Func2<GirlData, VedioData, GirlData>() {
                     @Override
@@ -203,13 +204,11 @@ public class GirlFragment extends Fragment {
                     public void onStart() {
                         super.onStart();
                         Log.e(TAG, "onStart");
-                        setRefresh(true);
                     }
 
                     @Override
                     public void onCompleted() {
                         Log.e(TAG, "onCompleted");
-                        setRefresh(false);
                     }
 
                     @Override
@@ -222,6 +221,7 @@ public class GirlFragment extends Fragment {
                                         loadData(false);
                                     }
                                 }).show();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
@@ -240,7 +240,7 @@ public class GirlFragment extends Fragment {
                         } else {
                             mMeizhiListAdapter.notifyItemRangeChanged(start, 10);
                         }
-                        setRefresh(false);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
 
@@ -249,11 +249,6 @@ public class GirlFragment extends Fragment {
         mCompositeSubscription.add(s);
     }
 
-    public void setRefresh(boolean refresh) {
-        if (swipeRefreshLayout == null)
-            return;
-        swipeRefreshLayout.setRefreshing(refresh);
-    }
 
 
     public RecyclerView.OnScrollListener getOnScrollListener(final StaggeredGridLayoutManager layoutManager) {
