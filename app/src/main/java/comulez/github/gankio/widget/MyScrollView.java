@@ -39,8 +39,8 @@ public class MyScrollView extends ScrollView {
             case MotionEvent.ACTION_UP:
                 lastX = (int) event.getRawX();
                 lastY = (int) event.getRawY();
-                if (firstX != 0 && firstY != 0 && lastX != 0 && lastY != 0 && Math.abs(lastX - firstX) > Math.abs(lastY - firstY)) {
-                    if (lastX - firstX > 0) {
+                if (firstX != 0 && firstY != 0 && lastX != 0 && lastY != 0 && Math.abs(lastX - firstX) > Math.abs(lastY - firstY)&& Math.abs(lastX - firstX)>100) {
+                    if (lastX - firstX > 0 && position > 1) {
                         position--;
                     } else {
                         position++;
