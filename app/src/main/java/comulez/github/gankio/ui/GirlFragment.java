@@ -1,4 +1,4 @@
-package comulez.github.gankio.ui.base;
+package comulez.github.gankio.ui;
 
 
 import android.app.Activity;
@@ -36,9 +36,6 @@ import comulez.github.gankio.R;
 import comulez.github.gankio.data.Girl;
 import comulez.github.gankio.data.GirlData;
 import comulez.github.gankio.data.VedioData;
-import comulez.github.gankio.ui.GankActivity;
-import comulez.github.gankio.ui.PictureActivity;
-import comulez.github.gankio.ui.WebViewActivity;
 import comulez.github.gankio.ui.adapter.GirlsListAdapter;
 import comulez.github.gankio.util.Tutil;
 import comulez.github.gankio.widget.MultiSwipeRefreshLayout;

@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import comulez.github.gankio.R;
-import comulez.github.gankio.ui.base.GirlFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,15 +26,14 @@ public class MainActivity extends AppCompatActivity
     private Fragment mCurrentFragment;
     private GirlFragment girlFragment;
     private NovelFragment novelFragment;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getString(R.string.novel));
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         mCurrentFragment=novelFragment;
         transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_main, mCurrentFragment).commitAllowingStateLoss();
+        toolbar.setTitle(getString(R.string.novel));
     }
 
     /**
@@ -120,12 +119,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_novel) {
             if (!(mCurrentFragment instanceof NovelFragment)){
                 switchFragment(mCurrentFragment, novelFragment);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.content_main, NovelFragment.newInstance("","")).commitAllowingStateLoss();
+                toolbar.setTitle(getString(R.string.novel));
             }
         } else if (id == R.id.nav_girl) {
             if (!(mCurrentFragment instanceof GirlFragment)){
                 switchFragment(mCurrentFragment, girlFragment);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.content_main, GirlFragment.newInstance("","")).commitAllowingStateLoss();
+                toolbar.setTitle(getString(R.string.girl));
             }
         } else if (id == R.id.nav_slideshow) {
 
