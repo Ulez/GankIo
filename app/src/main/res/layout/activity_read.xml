@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/reader_bg_yellow_edge"
     tools:context="comulez.github.gankio.ui.ReadActivity">
 
     <comulez.github.gankio.widget.MyScrollView
