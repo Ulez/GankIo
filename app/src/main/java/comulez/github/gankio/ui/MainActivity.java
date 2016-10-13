@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import comulez.github.gankio.R;
+import comulez.github.gankio.ui.base.GirlFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fManager;
     private FragmentTransaction transaction;
     private Fragment mCurrentFragment;
-    private GirlsFragment girlsFragment;
+    private GirlFragment girlFragment;
     private NovelFragment novelFragment;
 
     @Override
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.novel));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,12 +53,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_camera);
-
-        fManager = getSupportFragmentManager();
-
-        transaction = fManager.beginTransaction();
-        transaction.replace(R.id.content_main, NovelFragment2.newInstance("","")).commitAllowingStateLoss();
+        navigationView.setCheckedItem(R.id.nav_novel);
+        girlFragment = GirlFragment.newInstance("","");
+        novelFragment = NovelFragment.newInstance("","");
+        mCurrentFragment=novelFragment;
+        transaction=getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_main, mCurrentFragment).commitAllowingStateLoss();
     }
 
     /**
@@ -64,10 +66,9 @@ public class MainActivity extends AppCompatActivity
      * 切换页面的重载，优化了fragment的切换
      */
     public void switchFragment(Fragment from, Fragment to) {
+        transaction=getSupportFragmentManager().beginTransaction();
         if (from == null)
             return;
-        if (to == null)
-            GirlsFragment.newInstance("", "");
         if (!to.isAdded()) {
             // 隐藏当前的fragment，add下一个到Activity中
             transaction.hide(from).add(R.id.content_main, to).commitAllowingStateLoss();
@@ -116,10 +117,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
+        if (id == R.id.nav_novel) {
+            if (!(mCurrentFragment instanceof NovelFragment)){
+                switchFragment(mCurrentFragment, novelFragment);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.content_main, NovelFragment.newInstance("","")).commitAllowingStateLoss();
+            }
+        } else if (id == R.id.nav_girl) {
+            if (!(mCurrentFragment instanceof GirlFragment)){
+                switchFragment(mCurrentFragment, girlFragment);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.content_main, GirlFragment.newInstance("","")).commitAllowingStateLoss();
+            }
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -131,7 +138,6 @@ public class MainActivity extends AppCompatActivity
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        switchFragment(mCurrentFragment, novelFragment);
         return true;
     }
 }

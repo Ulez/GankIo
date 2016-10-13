@@ -1,51 +1,59 @@
 package comulez.github.gankio.ui;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import comulez.github.gankio.NovelActivity;
-import comulez.github.gankio.NovelApi;
-import comulez.github.gankio.NovelRetrofit;
 import comulez.github.gankio.R;
-import comulez.github.gankio.data.Bookcc;
-import comulez.github.gankio.ui.adapter.DividerItemDecoration;
-import comulez.github.gankio.ui.adapter.NovelsAdpter;
 import comulez.github.gankio.util.Constant;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * to handle interaction events.
+ * Use the {@link NovelFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class NovelFragment extends Fragment {
-    private static final String novel_type = "novel_type";
-    private int mType;
-    private Context context;
-    private String TAG = "NovelFragment";
-    private RecyclerView recyclerView;
-    private List<Bookcc> books = new ArrayList<>();
-    private NovelsAdpter novelsAdpter;
-    private RecyclerView.OnScrollListener onscrollListner;
-    private int page_id =1;
-    private ProgressBar pb_loading;
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private TabLayout mTablayout;
+    private ViewPager mViewPager;
+
 
     public NovelFragment() {
+        // Required empty public constructor
     }
 
-    public static NovelFragment newInstance(int type) {
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment NovelFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static NovelFragment newInstance(String param1, String param2) {
         NovelFragment fragment = new NovelFragment();
         Bundle args = new Bundle();
-        args.putInt(novel_type, type);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,97 +61,66 @@ public class NovelFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getActivity();
         if (getArguments() != null) {
-            mType = getArguments().getInt(novel_type);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.rv_books);
-        pb_loading = (ProgressBar) view.findViewById(R.id.pg_loading);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
-        novelsAdpter = new NovelsAdpter(context, books);
-        recyclerView.setAdapter(novelsAdpter);
-        recyclerView.addOnScrollListener(getOnScrollListener(linearLayoutManager));
-        novelsAdpter.setOnItemClickListener(new NovelsAdpter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, Bookcc book) {
-                Log.e(TAG,"id="+book.getId());
-                context.startActivity(NovelActivity.newIntence(context,book));
-            }
-        });
-        loadDataByType(false, mType);
+        mTablayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        mViewPager.setOffscreenPageLimit(3);
+        setupViewPager(mViewPager);
+        mTablayout.addTab(mTablayout.newTab().setText(R.string.xuanhuan));
+        mTablayout.addTab(mTablayout.newTab().setText(R.string.wuxia));
+        mTablayout.addTab(mTablayout.newTab().setText(R.string.yanqing));
+        mTablayout.addTab(mTablayout.newTab().setText(R.string.dushi));
+        mTablayout.addTab(mTablayout.newTab().setText(R.string.xuanyi));
+        mTablayout.setupWithViewPager(mViewPager);
         return view;
     }
-
-    public RecyclerView.OnScrollListener getOnScrollListener(final LinearLayoutManager layoutManager) {
-        onscrollListner = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int pos = layoutManager.findLastVisibleItemPosition();
-                boolean isBottom = pos >= books.size() - 1;
-                if (isBottom) {
-                    page_id++;
-                    loadDataByType(false,mType);
-                }
-            }
-        };
-        return onscrollListner;
+    private void setupViewPager(ViewPager mViewPager) {
+        MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(NovelListFragment.newInstance(Constant.NOVEL_TYPE_XUANHUAN), getString(R.string.xuanhuan));
+        adapter.addFragment(NovelListFragment.newInstance(Constant.NOVEL_TYPE_WUXIA), getString(R.string.wuxia));
+        adapter.addFragment(NovelListFragment.newInstance(Constant.NOVEL_TYPE_YANQING), getString(R.string.yanqing));
+        adapter.addFragment(NovelListFragment.newInstance(Constant.NOVEL_TYPE_DUSHI), getString(R.string.dushi));
+        adapter.addFragment(NovelListFragment.newInstance(Constant.NOVEL_TYPE_XUANYI), getString(R.string.xuanyi));
+        mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(4);
     }
 
-    private void loadDataByType(final boolean clear, int novel_type) {
-        Observable<List<Bookcc>> observable=getObservabel(novel_type);
-        if (observable==null)
-            return;
-        observable.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Bookcc>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.e(TAG, "onCompleted");
-                    }
+    public static class MyPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError" + e.toString());
-                    }
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-                    @Override
-                    public void onNext(List<Bookcc> novelBean) {
-                        if (clear)
-                            books.clear();
-                        books.addAll(novelBean);
-                        novelsAdpter.notifyDataSetChanged();
-                        pb_loading.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
-                });
-    }
+        public void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
 
-    private Observable<List<Bookcc>> getObservabel(int novel_type) {
-        Log.e("lcyy","type="+novel_type+"----page="+page_id);
-        NovelApi novelService = NovelRetrofit.getmInstance().getmNovelService();
-        switch (novel_type){
-            case Constant.NOVEL_TYPE_XUANHUAN:
-                return  novelService.getRecommend(novel_type,page_id);
-            case Constant.NOVEL_TYPE_WUXIA:
-                return  novelService.getRecommend(novel_type,page_id);
-            case Constant.NOVEL_TYPE_YANQING:
-                return  novelService.getRecommend(novel_type,page_id);
-            case Constant.NOVEL_TYPE_DUSHI:
-                return  novelService.getRecommend(novel_type,page_id);
-            case Constant.NOVEL_TYPE_XUANYI:
-                return  novelService.getRecommend(novel_type,page_id);
-            default:
-                return null;
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitles.get(position);
         }
     }
+
 }
