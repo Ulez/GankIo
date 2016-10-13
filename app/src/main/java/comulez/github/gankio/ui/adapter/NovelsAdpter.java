@@ -71,7 +71,6 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        Log.e("LCY", "position=" + position);
         if (position < bookList.size())
             return NORMAL;
         else

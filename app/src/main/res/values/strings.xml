@@ -29,4 +29,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="xuanhuan">玄幻</string>
+    <string name="yanqing">言情</string>
+    <string name="chuanyue">穿越</string>
+    <string name="baihe">耽美百合</string>
+    <string name="wuxia">武侠</string>
+    <string name="lishi">历史</string>
+    <string name="xuanyi">悬疑推理</string>
+    <string name="kongbu">恐怖</string>
+    <string name="dushi">都市</string>
 </resources>

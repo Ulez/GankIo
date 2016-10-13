@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         fManager = getSupportFragmentManager();
 
         transaction = fManager.beginTransaction();
-        transaction.replace(R.id.content_main, NovelFragment.newInstance("","")).commitAllowingStateLoss();
+        transaction.replace(R.id.content_main, NovelFragment2.newInstance("","")).commitAllowingStateLoss();
     }
 
     /**

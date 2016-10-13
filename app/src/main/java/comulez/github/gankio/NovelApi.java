@@ -25,7 +25,7 @@ public interface NovelApi {
 
     //http://api.novelking.cc/api/v1/novels/recommend_category_novels.json?recommend_category_id={value}//推荐更多
     @GET("/api/v1/novels/recommend_category_novels.json")
-    rx.Observable<NovelBean> getRecommend(@Query("recommend_category_id") int value);
+    rx.Observable<List<Bookcc>> getRecommend(@Query("recommend_category_id") int value,@Query("page") int page);
 
     //http://api.novelking.cc/api/v1/novels/new_uploaded_novels.json?&page={page}//最新上架小说
     @GET("/api/v1/novels/new_uploaded_novels.json")

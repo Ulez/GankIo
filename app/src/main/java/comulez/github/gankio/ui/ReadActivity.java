@@ -47,7 +47,7 @@ public class ReadActivity extends AppCompatActivity implements MyScrollView.Load
         setContentView(R.layout.activity_read);
         ButterKnife.bind(this);
         parse(getIntent());
-        scrollView.setLoadMoreListener(this, mPosition, isLoading);
+        scrollView.setLoadMoreListener(this, mPosition, isLoading,chapterItems.size());
     }
 
     private void parse(Intent intent) {

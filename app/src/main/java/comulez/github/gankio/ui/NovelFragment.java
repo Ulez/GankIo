@@ -21,15 +21,15 @@ import comulez.github.gankio.R;
 import comulez.github.gankio.data.Bookcc;
 import comulez.github.gankio.ui.adapter.DividerItemDecoration;
 import comulez.github.gankio.ui.adapter.NovelsAdpter;
+import comulez.github.gankio.util.Constant;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NovelFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
+    private static final String novel_type = "novel_type";
+    private int mType;
     private Context context;
     private String TAG = "NovelFragment";
     private RecyclerView recyclerView;
@@ -42,11 +42,10 @@ public class NovelFragment extends Fragment {
     public NovelFragment() {
     }
 
-    public static NovelFragment newInstance(String param1, String param2) {
+    public static NovelFragment newInstance(int type) {
         NovelFragment fragment = new NovelFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(novel_type, type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +55,7 @@ public class NovelFragment extends Fragment {
         super.onCreate(savedInstanceState);
         context = getActivity();
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mType = getArguments().getInt(novel_type);
         }
     }
 
@@ -80,7 +78,7 @@ public class NovelFragment extends Fragment {
                 context.startActivity(NovelActivity.newIntence(context,book));
             }
         });
-        loadData(false);
+        loadDataByType(false, mType);
         return view;
     }
 
@@ -93,17 +91,18 @@ public class NovelFragment extends Fragment {
                 boolean isBottom = pos >= books.size() - 1;
                 if (isBottom) {
                     page_id++;
-                    loadData(false);
+                    loadDataByType(false,mType);
                 }
             }
         };
         return onscrollListner;
     }
 
-    private void loadData(final boolean clear) {
-        NovelApi novelService = NovelRetrofit.getmInstance().getmNovelService();
-        novelService.getAllRank(page_id)
-                .subscribeOn(Schedulers.io())
+    private void loadDataByType(final boolean clear, int novel_type) {
+        Observable<List<Bookcc>> observable=getObservabel(novel_type);
+        if (observable==null)
+            return;
+        observable.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Bookcc>>() {
@@ -127,5 +126,24 @@ public class NovelFragment extends Fragment {
                         recyclerView.setVisibility(View.VISIBLE);
                     }
                 });
+    }
+
+    private Observable<List<Bookcc>> getObservabel(int novel_type) {
+        Log.e("lcyy","type="+novel_type+"----page="+page_id);
+        NovelApi novelService = NovelRetrofit.getmInstance().getmNovelService();
+        switch (novel_type){
+            case Constant.NOVEL_TYPE_XUANHUAN:
+                return  novelService.getRecommend(novel_type,page_id);
+            case Constant.NOVEL_TYPE_WUXIA:
+                return  novelService.getRecommend(novel_type,page_id);
+            case Constant.NOVEL_TYPE_YANQING:
+                return  novelService.getRecommend(novel_type,page_id);
+            case Constant.NOVEL_TYPE_DUSHI:
+                return  novelService.getRecommend(novel_type,page_id);
+            case Constant.NOVEL_TYPE_XUANYI:
+                return  novelService.getRecommend(novel_type,page_id);
+            default:
+                return null;
+        }
     }
 }
