@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import comulez.github.gankio.App;
+import comulez.github.gankio.MyApplication;
 
 /**
  * Created by Ulez on 2016/9/2.
@@ -12,7 +12,7 @@ import comulez.github.gankio.App;
  */
 public class Tutil {
     public static void t(String message) {
-        Toast.makeText(App.getsContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MyApplication.getsContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public static void l(String tag, String s) {

@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -264,37 +263,9 @@ public class GirlFragment extends Fragment {
         return onscrollListner;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_trending:
-                openGitHubTrending();
-                return true;
-            case R.id.action_search:
-                openGitHubSearch();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void openGitHubSearch() {
-        String url = getString(R.string.url_login_github_search);
-        String title = getString(R.string.action_github_search);
-        Intent intent = WebViewActivity.newIntent(mContext, url, title);
-        startActivity(intent);
-    }
-
-    private void openGitHubTrending() {
-        String url = getString(R.string.url_github_trending);
-        String title = getString(R.string.action_github_trending);
-        Intent intent = WebViewActivity.newIntent(mContext, url, title);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        ButterKnife.unbind(this);
+//    }
 }

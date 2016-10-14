@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -49,6 +50,7 @@ public class PictureActivity extends ToolbarActivity {
     private PhotoViewAttacher mPhotoViewAttacher;
     private String TAG = "PictureActivity";
     private int CODE_FOR_WRITE_PERMISSION = 2;
+    private Matrix defualt;
 
     @Override
     protected int provideContentViewId() {
@@ -67,6 +69,9 @@ public class PictureActivity extends ToolbarActivity {
         Picasso.with(this).load(url).into(image);
 
         mPhotoViewAttacher = new PhotoViewAttacher(image);
+
+        defualt = mPhotoViewAttacher.getImageView().getMatrix();
+
         mPhotoViewAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -207,5 +212,10 @@ public class PictureActivity extends ToolbarActivity {
         intent.putExtra(IMAGE_DESC, desc);
         intent.putExtra(IMAGE_URL, url);
         return intent;
+    }
+    @Override
+    public void onDestroy() {
+//        mPhotoViewAttacher.setDisplayMatrix(defualt);
+        super.onDestroy();
     }
 }
