@@ -80,6 +80,7 @@ public class NovelActivity extends AppCompatActivity implements View.OnClickList
         if (book != null) {
             Glide.with(this)
                     .load(book.getPic())
+                    .placeholder(R.drawable.bg_default_cover)
                     .centerCrop()
                     .into(ivBook);
             author.setText(book.getAuthor() + " 著");
