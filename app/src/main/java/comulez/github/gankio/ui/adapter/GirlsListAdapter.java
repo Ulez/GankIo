@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,16 +38,17 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
     }
 
     @Override
-    public void onBindViewHolder(GirlHolder holder, int position) {
-        Girl girl = mGirls.get(position);
+    public void onBindViewHolder(final GirlHolder holder, int position) {
+        final Girl girl = mGirls.get(position);
         String text = girl.desc.length() > 22 ? girl.desc.substring(0, 21) + "..." : girl.desc;
         holder.girlImage.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
-        Glide.with(mContext)
+        Picasso.with(mContext)
                 .load(girl.url)
+                .fit()
                 .centerCrop()
                 .into(holder.girlImage);
         holder.gankDec.setText(text);
-        holder.girl=girl;
+        holder.girl = girl;
     }
 
     @Override
@@ -77,7 +78,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
         @Override
         public void onClick(View v) {
             if (onGirlClickListenr != null)
-                onGirlClickListenr.onGirlClick(v, girlImage, gankDec,girl);
+                onGirlClickListenr.onGirlClick(v, girlImage, gankDec, girl);
         }
     }
 

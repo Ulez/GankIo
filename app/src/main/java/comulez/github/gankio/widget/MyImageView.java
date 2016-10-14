@@ -37,6 +37,6 @@ public class MyImageView extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        setMeasuredDimension(width, ratio == 1.0f ? (int) (1.5 * width) : (int) (1.618 * width));
+        setMeasuredDimension(width, ratio == 1.0f ? (int) (1.5 * width) : (int) (1.518 * width));
     }
 }
