@@ -71,7 +71,6 @@ public class PictureActivity extends ToolbarActivity {
         mPhotoViewAttacher = new PhotoViewAttacher(image);
 
         defualt = mPhotoViewAttacher.getImageView().getMatrix();
-
         mPhotoViewAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -212,10 +211,5 @@ public class PictureActivity extends ToolbarActivity {
         intent.putExtra(IMAGE_DESC, desc);
         intent.putExtra(IMAGE_URL, url);
         return intent;
-    }
-    @Override
-    public void onDestroy() {
-//        mPhotoViewAttacher.setDisplayMatrix(defualt);
-        super.onDestroy();
     }
 }

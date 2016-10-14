@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
@@ -132,6 +133,7 @@ public class GirlFragment extends Fragment {
                 if (girl == null) return;
                 if (v == imageView && !beTouched) {
                     beTouched = true;
+                    imageView.setScaleType(ImageView.ScaleType.MATRIX);//加了防止photoview报错；
                     Picasso.with(mContext).load(girl.url).fetch(new Callback() {//加载完了再开启activity，防止activity动画错误；
                         @Override
                         public void onSuccess() {
