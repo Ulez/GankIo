@@ -44,6 +44,7 @@ public class GirlsListAdapter extends RecyclerView.Adapter<GirlsListAdapter.Girl
         holder.girlImage.setRatio(position % 2 == 0 ? 1.0f : 2.0f);
         Picasso.with(mContext)
                 .load(girl.url)
+                .error(R.drawable.defalt_girl)
                 .fit()
                 .centerCrop()
                 .into(holder.girlImage);

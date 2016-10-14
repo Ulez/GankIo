@@ -2,7 +2,6 @@ package comulez.github.gankio.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +50,7 @@ public class NovelsAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Bookcc book = bookList.get(position);
                 Glide.with(mContext)
                         .load(book.getPic())
+                        .placeholder(R.drawable.bg_default_cover)
                         .centerCrop()
                         .into(((NovelHolder) holder).iv_book);
                 ((NovelHolder) holder).author.setText(book.getAuthor() + " 著");
