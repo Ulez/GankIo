@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                 toolbar.setTitle(getString(R.string.girl));
             }
         } else if (id == R.id.nav_slideshow) {
-
+            startActivity(WebViewActivity.newIntent(this,"http://e.weather.com.cn/d/index/101010100.shtml","天气预报"));
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
